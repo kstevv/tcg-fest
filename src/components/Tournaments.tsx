@@ -1,4 +1,3 @@
-// /src/components/Tournaments.tsx
 import Link from "next/link";
 
 type Tournament = {
@@ -50,6 +49,18 @@ const T2: Tournament = {
   cta: { label: "REGISTER NOW", href: "/tournaments/avatar-sealed-lcq" },
 };
 
+/* ------- Shared look to match “Get Involved” ------- */
+const CARD_SHELL =
+  "rounded-2xl ring-1 ring-white/10 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] " +
+  "bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0)_100%)] " +
+  "px-5 sm:px-6 py-5 sm:py-6";
+
+const CTA_CLASSES =
+  "inline-flex items-center justify-center px-6 py-3 rounded-md font-extrabold " +
+  "uppercase tracking-[0.22em] text-white ring-1 ring-black/15 shadow " +
+  "bg-[linear-gradient(90deg,#D52EF5_0%,#5416DD_100%)] hover:brightness-110 " +
+  "active:translate-y-[1px] transition";
+
 export default function TournamentsSection({
   tournaments = [T1, T2],
   heading = "Tournaments",
@@ -83,10 +94,10 @@ export default function TournamentsSection({
 
 function TournamentCard({ t }: { t: Tournament }) {
   return (
-    <div className="rounded-2xl bg-gradient-to-b from-[var(--color-lessdark)_20%] to-[rgba(19,19,19,0.4)] ring-1 ring-white/10 backdrop-blur shadow-2xl px-5 sm:px-6 py-5 sm:py-6">
+    <div className={CARD_SHELL}>
       {/* Badge */}
       <div className="flex items-center gap-2">
-        <span className="inline-flex h-8 items-center rounded-full bg-neutral-800 px-3 text-xs font-bold uppercase tracking-wide text-white/90 ring-1 ring-white/15">
+        <span className="inline-flex h-8 items-center rounded-full bg-neutral-800/80 px-3 text-xs font-bold uppercase tracking-wide text-white/90 ring-1 ring-white/15">
           {t.badge}
         </span>
       </div>
@@ -117,12 +128,9 @@ function TournamentCard({ t }: { t: Tournament }) {
         </div>
       </div>
 
-      {/* CTA */}
+      {/* CTA (square, gradient, not full-width) */}
       <div className="mt-6">
-        <Link
-          href={t.cta.href}
-          className="block w-full rounded-xl bg-[#D52EF5] px-5 py-3 text-center text-sm font-bold text-white shadow-[inset_0_-2px_0_rgba(0,0,0,.2)] ring-1 ring-black/20 hover:brightness-110 active:translate-y-[1px] transition"
-        >
+        <Link href={t.cta.href} className={CTA_CLASSES}>
           {t.cta.label}
         </Link>
       </div>

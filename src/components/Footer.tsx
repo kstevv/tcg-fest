@@ -22,6 +22,15 @@ export default function Footer() {
           </ul>
         </div>
 
+       {/*  <div className="mt-10">
+          <h3 className="text-2xl font-extrabold tracking-tight text-white">Presented by Special Delivery:</h3>
+          <ul className="mt-4 flex flex-wrap items-center gap-4">
+            <Social href="#" label="X"><XIcon /></Social>
+            <Social href="#" label="YouTube"><YouTubeIcon /></Social>
+            <Social href="#" label="Instagram"><InstagramIcon /></Social>
+          </ul>
+        </div>  */}
+
         {/* --- Purple divider --- */}
         <div className="mt-12">
           <div className="h-px bg-gradient-to-r from-transparent via-[#6E61FF]/70 to-transparent shadow-[0_0_12px_#6E61FF80]" />

@@ -1,19 +1,17 @@
-// /src/components/FAQ.tsx
 "use client";
 
 import { useState } from "react";
 
-type FAQItem = { q: string; a: string };
+export type FAQItem = { q: string; a: string };
 
-const DEFAULT_FAQS: FAQItem[] = [
-  { q: "Why should a founder apply?", a: "You’ll get exposure to top investors, partners, and media—plus stage time and curated meetings that accelerate traction." },
-  { q: "Does it cost anything to participate?", a: "No entry fee. If selected, you’ll receive complimentary event access for the program’s core activities." },
-  { q: "Is my startup application confidential?", a: "Yes. Your application is kept confidential and shared only with the review committee." },
-  { q: "How do you define an early-stage startup?", a: "Generally pre-Series A, with a live product or strong prototype and early signs of demand." },
-  { q: "Will there be interviews during the process?", a: "Some applicants are invited to a short interview so we can learn more and offer the best fit." },
-];
+// Local safe default so the component compiles even if nothing is passed.
+const DEFAULT_FAQ: FAQItem[] = [];
 
-export default function FAQSection({ items = DEFAULT_FAQS }: { items?: FAQItem[] }) {
+export default function FAQSection({
+  items = DEFAULT_FAQ,
+}: {
+  items?: FAQItem[];
+}) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
@@ -43,7 +41,7 @@ export default function FAQSection({ items = DEFAULT_FAQS }: { items?: FAQItem[]
                   "bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0)_100%)]",
                   isOpen
                     ? "ring-1 ring-[#D52EF5]/50 shadow-[0_0_0_1px_rgba(213,46,245,.25),0_20px_40px_rgba(213,46,245,.08)]"
-                    : ""
+                    : "",
                 ].join(" ")}
               >
                 {/* Header */}
@@ -66,7 +64,9 @@ export default function FAQSection({ items = DEFAULT_FAQS }: { items?: FAQItem[]
                       "inline-flex h-7 w-7 items-center justify-center rounded-md",
                       "ring-1 ring-white/15 text-white/90",
                       "bg-white/5 backdrop-blur-sm",
-                      isOpen ? "bg-[#D52EF5]/10 ring-[#D52EF5]/40 text-[#E88BFF]" : "group-hover:bg-white/10"
+                      isOpen
+                        ? "bg-[#D52EF5]/10 ring-[#D52EF5]/40 text-[#E88BFF]"
+                        : "group-hover:bg-white/10",
                     ].join(" ")}
                   >
                     {isOpen ? <CloseIcon /> : <PlusIcon />}
@@ -77,7 +77,7 @@ export default function FAQSection({ items = DEFAULT_FAQS }: { items?: FAQItem[]
                 <div
                   className={[
                     "mx-5 sm:mx-6 h-px bg-white/10 transition-opacity",
-                    isOpen ? "opacity-100" : "opacity-0"
+                    isOpen ? "opacity-100" : "opacity-0",
                   ].join(" ")}
                 />
 
@@ -87,7 +87,7 @@ export default function FAQSection({ items = DEFAULT_FAQS }: { items?: FAQItem[]
                   role="region"
                   className={[
                     "grid transition-[grid-template-rows,opacity] duration-300 ease-out",
-                    isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                    isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
                   ].join(" ")}
                 >
                   <div className="overflow-hidden">
@@ -108,14 +108,26 @@ export default function FAQSection({ items = DEFAULT_FAQS }: { items?: FAQItem[]
 /* ---------- Icons ---------- */
 function PlusIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" className="fill-current">
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      aria-hidden="true"
+      className="fill-current"
+    >
       <path d="M6 0h2v6h6v2H8v6H6V8H0V6h6z" />
     </svg>
   );
 }
 function CloseIcon() {
   return (
-    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" className="fill-current">
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      aria-hidden="true"
+      className="fill-current"
+    >
       <path d="M10.95 1.05 1.05 10.95 0 9.9 9.9 0l1.05 1.05ZM9.9 10.95 0 1.05 1.05 0l9.9 9.9-1.05 1.05Z" />
     </svg>
   );

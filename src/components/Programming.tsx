@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 
 export type ProgramItem = {
   title: string;
   description: string;
   image: string;
+  // keeping href in the type is optional; it's ignored by the Card now
   href?: string;
 };
 
@@ -19,51 +19,52 @@ interface ProgramSectionProps {
 
 const DEFAULT_ITEMS: ProgramItem[] = [
   {
-    title: "MEET INDUSTRY LEADERS",
+    title: "CHAMPIONSHIP TOURNAMENTS",
     description:
-      "Direct access to industry leaders at our exclusive Speaker networking events and lounges",
-    image: "/images/program/meet.jpg",
-    href: "#meet",
+      "Main events and side events across MTG, Pokémon, Yu-Gi-Oh!, Lorcana, and more.",
+    image: "/images/program/tournaments.png",
+    href: "/tournaments",
   },
   {
-    title: "GET GLOBAL EXPOSURE",
+    title: "VENDOR MARKETPLACE",
     description:
-      "Exposure to global media and VCs actively looking for their next investment",
-    image: "/images/program/exposure.jpg",
-    href: "#exposure",
+      "Sealed product, singles, accessories, vintage grails—shop dozens of top vendors.",
+    image: "/images/program/vendors.png",
+    href: "/vendors",
   },
   {
-    title: "SHOWCASE AT TOKEN2049",
-    description: "A dedicated startup stand at TOKEN2049 Singapore",
-    image: "/images/program/showcase.jpg",
-    href: "#showcase",
-  },
-    {
-    title: "MEET INDUSTRY LEADERS",
+    title: "PRIZE GIVEAWAYS",
     description:
-      "Direct access to industry leaders at our exclusive Speaker networking events and lounges",
-    image: "/images/program/meet.jpg",
-    href: "#meet",
+      "Raffles, stage giveaways, and bounty events running throughout the show.",
+    image: "/images/program/giveaways.png",
+    href: "#giveaways",
   },
   {
-    title: "GET GLOBAL EXPOSURE",
+    title: "SPECIAL GUESTS & SIGNINGS",
     description:
-      "Exposure to global media and VCs actively looking for their next investment",
-    image: "/images/program/exposure.jpg",
-    href: "#exposure",
+      "Creators, artists, casters, and pros—meet, greet, and grab autographs.",
+    image: "/images/program/signings.png",
+    href: "/guests",
   },
   {
-    title: "SHOWCASE AT TOKEN2049",
-    description: "A dedicated startup stand at TOKEN2049 Singapore",
-    image: "/images/program/showcase.jpg",
-    href: "#showcase",
+    title: "LEARN-TO-PLAY & DEMOS",
+    description:
+      "Jump in fast with coaches and demo decks. Perfect for new and returning players.",
+    image: "/images/program/learn-to-play.png",
+    href: "/schedule",
+  },
+  {
+    title: "TRADING & GRADING LOUNGE",
+    description:
+      "Safe-trade zone with trade boards; on-site grading/submissions when available.",
+    image: "/images/program/trading.png",
+    href: "/trading",
   },
 ];
 
 export default function ProgramSection({
   title = "Experience",
-  blurb =
-    "",
+  blurb = "",
   items = DEFAULT_ITEMS,
   className = "",
 }: ProgramSectionProps) {
@@ -80,8 +81,8 @@ export default function ProgramSection({
           </p>
         </div>
 
-        {/* Purple divider that matches site container width */}
-        <div className="">
+        {/* Purple divider */}
+        <div>
           <div className="mx-auto h-px w-full max-w-7xl mb-8 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
         </div>
 
@@ -96,38 +97,42 @@ export default function ProgramSection({
   );
 }
 
-function Card({ title, description, image, href }: ProgramItem) {
-  const Inner = (
-    <div className="group relative h-72 w-full overflow-hidden rounded-2xl bg-neutral-900 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] transition">
-      {/* Background image */}
+function Card({ title, description, image }: ProgramItem) {
+  return (
+    <div
+      className="
+        group relative h-72 w-full overflow-hidden rounded-2xl
+        bg-neutral-900 ring-1 ring-white/10
+        shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]
+        transition
+        cursor-default select-none
+      "
+      aria-label={title}
+    >
+      {/* BG image */}
       <Image
         src={image}
         alt=""
         fill
         priority={false}
         sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-        className="object-cover object-center transition-transform duration-500 will-change-transform group-hover:scale-[1.03]"
+        className="z-0 object-cover object-center transition-transform duration-500 will-change-transform group-hover:scale-[1.03]"
       />
 
-      {/* Dark overlay gradient for text contrast */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/10" />
+      {/* Global dark tint */}
+      <div className="pointer-events-none absolute inset-0 z-10 bg-black/35" />
 
-      {/* Text content */}
-      <div className="absolute inset-x-0 bottom-0 space-y-2 p-6">
+      {/* Strong bottom ramp (covers ~60% height) */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[60%] bg-gradient-to-t from-black/92 via-black/75 to-transparent" />
+
+      {/* Inset inner shadow (deepens lower third) */}
+      <div className="pointer-events-none absolute inset-0 z-10 shadow-[inset_0_-80px_120px_-20px_rgba(0,0,0,0.95)]" />
+
+      {/* Content */}
+      <div className="absolute inset-x-0 bottom-0 z-20 space-y-2 p-6">
         <h3 className="text-xl font-semibold tracking-wide">{title}</h3>
         <p className="text-sm text-neutral-200/90">{description}</p>
       </div>
     </div>
-  );
-
-  return href ? (
-    <Link
-      href={href}
-      className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
-    >
-      {Inner}
-    </Link>
-  ) : (
-    Inner
   );
 }

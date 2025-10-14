@@ -3,7 +3,10 @@ import SpecialGuests from "@/components/Speakers/SpecialGuestsSection";
 import Programming from "@/components/Programming";
 import TournamentsSection from "@/components/Tournaments";
 import TicketTiers from "@/components/TicketTiers";
+import GetInvolved from "@/components/GetInvolved";
+import Venue from "@/components/Venue";
 import FAQSection from "@/components/FAQ";
+import { TCGFEST_FAQ } from "@/data/faq";
 
 export default function HomePage() {
   return (
@@ -39,13 +42,16 @@ export default function HomePage() {
       {/* Main content */}
       <main className="space-y-20 md:space-y-24">
         <SpecialGuests />
-       
 
-        {/* Programming section already uses .page-container internally */}
         <Programming />
         <TournamentsSection />
         <TicketTiers />
-        <FAQSection />
+        <GetInvolved />
+        <Venue
+        title="Travis County Exposition Center"
+        address="7311 Decker Ln, Austin, TX 78724"
+      />
+        <FAQSection items={TCGFEST_FAQ} />
       </main>
     </>
   );

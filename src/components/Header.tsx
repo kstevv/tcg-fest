@@ -33,7 +33,7 @@ export default function Header() {
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
             <NavLink href="/">HOME</NavLink>
-            <NavLink href="/about">ABOUT</NavLink>
+            <NavLink href="/about">ABOUT<span className="ml-2">+</span></NavLink>
 
             {/* Taller notched ribbons to better fill the bar */}
             <Ribbon href="/sponsor" label="SPONSOR" className="bg-[#D52EF5] text-white" size="lg" />
