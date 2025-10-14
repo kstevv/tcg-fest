@@ -1,4 +1,3 @@
-import Section from "@/components/Section";
 import Link from "next/link";
 import SpecialGuests from "@/components/Speakers/SpecialGuestsSection";
 import Programming from "@/components/Programming";
