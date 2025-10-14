@@ -1,0 +1,22 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          700: "#5416DD",
+          500: "#D52EF5",
+        },
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)", "Arial", "sans-serif"],
+        mono: ["var(--font-mono)", "monospace"],
+      },
+    },
+  },
+  darkMode: "media", // or 'class' if you want manual dark mode
+  plugins: [],
+};
