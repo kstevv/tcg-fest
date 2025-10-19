@@ -1,9 +1,10 @@
+// /src/components/Tournaments.tsx
 import Link from "next/link";
 
-type Tournament = {
+export type Tournament = {
   id: string;
-  badge: string;                 // top-left pill
-  title?: string;                // optional heading under badge
+  badge: string; // top-left pill
+  title?: string; // optional heading under badge
   format: string;
   structure: string;
   time: string;
@@ -12,44 +13,7 @@ type Tournament = {
   cta: { label: string; href: string };
 };
 
-const T1: Tournament = {
-  id: "mtg-modern-lcq",
-  badge: "MAGIC — MODERN — LCQ",
-  title: "Regional Championship LCQ",
-  format: "Modern",
-  structure: "Five (5) single-elimination rounds.",
-  time:
-    "Every 30 minutes. Starting at 9:30AM, 10:00AM, 10:30AM, 11:00AM, 11:30AM, 12:00PM, 12:30PM, 1:00PM, 1:30PM, 2:00PM, 2:30PM, 3:00PM, 3:30PM, 4:00PM, 4:30PM, 5:00PM.",
-  entry: "$25*",
-  prizes: [
-    "5 Wins – Regional Championship Qualification, 1000 Prize Wall Tickets",
-    "4 Wins – 1000 Prize Wall Tickets",
-    "3 Wins – 600 Prize Wall Tickets",
-    "2 Wins – 300 Prize Wall Tickets",
-    "1 Win – 100 Prize Wall Tickets",
-  ],
-  cta: { label: "REGISTER NOW", href: "/tournaments/modern-lcq" },
-};
-
-const T2: Tournament = {
-  id: "mtg-avatar-sealed-lcq",
-  badge: "MAGIC — AVATAR SEALED — LCQ",
-  title: "Regional Championship LCQ",
-  format: "Magic: The Gathering® | Avatar: The Last Airbender™ Sealed",
-  structure: "Four (4) single-elimination rounds.",
-  time:
-    "Every 60 minutes. Starting at 9:30AM, 10:30AM, 11:30AM, 12:30PM, 1:30PM, 2:30PM, 3:30PM, 4:30PM.",
-  entry: "$50*",
-  prizes: [
-    "4 Wins – Regional Championship Qualification, 600 Prize Wall Tickets",
-    "3 Wins – 600 Prize Wall Tickets",
-    "2 Wins – 300 Prize Wall Tickets",
-    "1 Win – 100 Prize Wall Tickets",
-  ],
-  cta: { label: "REGISTER NOW", href: "/tournaments/avatar-sealed-lcq" },
-};
-
-/* ------- Shared look to match “Get Involved” ------- */
+/* ---------- Same visual shell & CTA as Ticket Tiers ---------- */
 const CARD_SHELL =
   "rounded-2xl ring-1 ring-white/10 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] " +
   "bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0)_100%)] " +
@@ -61,8 +25,72 @@ const CTA_CLASSES =
   "bg-[linear-gradient(90deg,#D52EF5_0%,#5416DD_100%)] hover:brightness-110 " +
   "active:translate-y-[1px] transition";
 
+/* -------------------- Latest tournament data -------------------- */
+
+const ONE_PIECE_MAIN: Tournament = {
+  id: "one-piece-main-sat",
+  badge: "ONE PIECE — MAIN EVENT — SATURDAY",
+  title: "One Piece TCG Championship (128-Player Cap)",
+  format: "Constructed • 128 players max",
+  structure:
+    "Seven (7) Swiss rounds; play until a clear winner. Tiered prizing awarded Top 32 → Top 16 → Top 8 → Top 4 → Runner-Up → Champion (higher tiers receive everything listed below them).",
+  time:
+    "Saturday • Check-in/Player Meeting ~10:00 AM (TBA). Rounds fire immediately after. Expect full-day event.",
+  entry:
+    "Show admission required + $10–$15 tournament fee (final pricing TBA).",
+  prizes: [
+    "Top 32 – Product/prize support",
+    "Top 16 – Additional product/prize support",
+    "Top 8 – Additional product/prize support",
+    "Top 4 – Premium prize bundle",
+    "Runner-Up – Enhanced premium bundle",
+    "Champion – Champion prize bundle (product) + accolades",
+  ],
+  cta: { label: "REGISTER NOW", href: "/tournaments/one-piece-main" },
+};
+
+const RIFTBOUND_MAIN: Tournament = {
+  id: "riftbound-main-sun",
+  badge: "RIFTBOUND — MAIN EVENT — SUNDAY",
+  title: "Riftbound Championship (64-Player Cap)",
+  format:
+    "Constructed • 64 players max • Planned in partnership with Carde.io (TBC)",
+  structure:
+    "Five (5) Swiss rounds, cut to Top 4 single-elimination to determine a winner.",
+  time:
+    "Sunday • Schedule TBA (aiming for morning start). Expect half- to full-day event depending on turnout.",
+  entry:
+    "Show admission required + $10–$15 tournament fee (final pricing TBA).",
+  prizes: [
+    "Top 4 – Premium prize bundle",
+    "Runner-Up – Enhanced premium bundle",
+    "Champion – Champion prize bundle (product) + accolades",
+  ],
+  cta: { label: "REGISTER NOW", href: "/tournaments/riftbound-main" },
+};
+
+const WIN_A_BOX_PODS: Tournament = {
+  id: "win-a-box-pods",
+  badge: "SIDE EVENT — BOTH DAYS",
+  title: "On-Demand 16-Player “Win a Box” Pods",
+  format:
+    "Single-elimination pods • 16 players • Offered both days; games may include One Piece, Gundam, Union Arena, and more (based on interest).",
+  structure:
+    "Single-elimination • Pods launch as soon as 16 players register. Quick, self-contained events.",
+  time:
+    "All weekend • On demand as pods fill. Sign-up on site at the Side Events desk.",
+  entry: "$13 per player • Includes a participation pack.",
+  prizes: [
+    "Winner – 1 sealed booster box (or equivalent prize support)",
+    "All players – 1 participation booster pack",
+  ],
+  cta: { label: "JOIN A POD", href: "/tournaments/win-a-box" },
+};
+
+/* -------------------- Section -------------------- */
+
 export default function TournamentsSection({
-  tournaments = [T1, T2],
+  tournaments = [ONE_PIECE_MAIN, RIFTBOUND_MAIN, WIN_A_BOX_PODS],
   heading = "Tournaments",
 }: {
   tournaments?: Tournament[];
@@ -76,7 +104,7 @@ export default function TournamentsSection({
           {heading}
         </h2>
 
-        {/* Purple divider (same as Ticket Tiers) */}
+        {/* Purple divider — same as Ticket Tiers */}
         <div className="mt-6">
           <div className="h-px w-full mb-8 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
         </div>
@@ -91,6 +119,8 @@ export default function TournamentsSection({
     </section>
   );
 }
+
+/* -------------------- Card -------------------- */
 
 function TournamentCard({ t }: { t: Tournament }) {
   return (
@@ -111,10 +141,10 @@ function TournamentCard({ t }: { t: Tournament }) {
 
       {/* Details */}
       <div className="mt-5 space-y-3 text-sm text-white/85">
-        <DetailLine label="Format" value={t.format} />
-        <DetailLine label="Structure" value={t.structure} />
-        <DetailLine label="Time" value={t.time} />
-        <DetailLine label="Entry" value={t.entry} />
+        <InfoRow label="Format" value={t.format} />
+        <InfoRow label="Structure" value={t.structure} />
+        <InfoRow label="Time" value={t.time} />
+        <InfoRow label="Entry" value={t.entry} />
 
         <div className="pt-1">
           <span className="block text-white/60 text-[11px] uppercase tracking-wide">
@@ -128,7 +158,7 @@ function TournamentCard({ t }: { t: Tournament }) {
         </div>
       </div>
 
-      {/* CTA (square, gradient, not full-width) */}
+      {/* CTA (same gradient + shape as Ticket Tiers) */}
       <div className="mt-6">
         <Link href={t.cta.href} className={CTA_CLASSES}>
           {t.cta.label}
@@ -138,7 +168,8 @@ function TournamentCard({ t }: { t: Tournament }) {
   );
 }
 
-function DetailLine({ label, value }: { label: string; value: string }) {
+/* Single helper name (prevents duplicate identifier errors) */
+function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="border-b border-white/10 pb-3 last:border-b-0 last:pb-0">
       <span className="block text-white/60 text-[11px] uppercase tracking-wide">

@@ -3,6 +3,12 @@
 
 import Link from "next/link";
 
+/* ---------- Shared visual shell (matches Ticket Tiers & Tournaments) ---------- */
+const CARD_SHELL =
+  "rounded-2xl ring-1 ring-white/10 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] " +
+  "bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0)_100%)] " +
+  "p-6";
+
 /* --- Ribbon (nav-style notched button) --- */
 function Ribbon({
   href,
@@ -56,11 +62,7 @@ function Ribbon({
 export default function GetInvolved() {
   return (
     <section aria-labelledby="get-involved" className="relative isolate mb-0 pb-10">
-      {/* dotted + subtle brand gradient */}
-      <div className="absolute inset-0 -z-10">
-        <div className="h-full w-full bg-[radial-gradient(12px_12px_at_1px_1px,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:18px_18px]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#5416DD0f] to-[#D52EF50d]" />
-      </div>
+      {/* Removed dotted overlay entirely for a clean, uniform background */}
 
       <div className="page-container py-16 md:py-20">
         <div className="mb-6">
@@ -70,17 +72,14 @@ export default function GetInvolved() {
           >
             Get Involved
           </h2>
-         {/* <p className="mt-3 text-sm sm:text-base text-white/70">
-            Apply to participate — whether you’re a sponsor, vendor, or member of the press.
-          </p>*/}
         </div>
 
-        {/* divider */}
+        {/* divider – same as other sections */}
         <div className="mx-auto h-px w-full max-w-7xl mb-8 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {/* Sponsors */}
-          <article className="rounded-2xl bg-gradient-to-b from-[var(--color-lessdark)_20%] to-[rgba(19,19,19,0.4)] ring-1 ring-white/10 backdrop-blur shadow-2xl p-6">
+          <article className={CARD_SHELL}>
             <span className="inline-flex h-8 items-center rounded-full bg-white/5 px-3 text-xs font-bold uppercase tracking-wide text-white/90 ring-1 ring-white/15">
               SPONSORS
             </span>
@@ -92,18 +91,17 @@ export default function GetInvolved() {
               collectors and players.
             </p>
             <div className="mt-6">
-              {/* gradient like your purple/pink CTAs */}
               <Ribbon
                 href="/sponsor"
-                label="SPONSOR 2026"
-                className="bg-gradient-to-r from-[#D52EF5] to-[#5416DD]"
+                label="SPONSOR"
+                className="bg-[linear-gradient(90deg,#D52EF5_0%,#5416DD_100%)]"
                 size="md"
               />
             </div>
           </article>
 
           {/* Vendors */}
-          <article className="rounded-2xl bg-gradient-to-b from-[var(--color-lessdark)_20%] to-[rgba(19,19,19,0.4)] ring-1 ring-white/10 backdrop-blur shadow-2xl p-6">
+          <article className={CARD_SHELL}>
             <span className="inline-flex h-8 items-center rounded-full bg-white/5 px-3 text-xs font-bold uppercase tracking-wide text-white/90 ring-1 ring-white/15">
               VENDORS
             </span>
@@ -115,18 +113,17 @@ export default function GetInvolved() {
               marketplace.
             </p>
             <div className="mt-6">
-              {/* reversed gradient for variety (optional) */}
               <Ribbon
                 href="/vendors/apply"
-                label="VENDOR APPLICATION"
-                className="bg-gradient-to-r from-[#5416DD] to-[#D52EF5]"
+                label="APPLY TO VEND"
+                className="bg-[linear-gradient(90deg,#D52EF5_0%,#5416DD_100%)]"
                 size="md"
               />
             </div>
           </article>
 
           {/* Press */}
-          <article className="rounded-2xl bg-gradient-to-b from-[var(--color-lessdark)_20%] to-[rgba(19,19,19,0.4)] ring-1 ring-white/10 backdrop-blur shadow-2xl p-6">
+          <article className={CARD_SHELL}>
             <span className="inline-flex h-8 items-center rounded-full bg-white/5 px-3 text-xs font-bold uppercase tracking-wide text-white/90 ring-1 ring-white/15">
               PRESS
             </span>
@@ -141,7 +138,7 @@ export default function GetInvolved() {
               <Ribbon
                 href="/press"
                 label="APPLY FOR PRESS"
-                className="bg-gradient-to-r from-[#D52EF5] to-[#5416DD]"
+                className="bg-[linear-gradient(90deg,#D52EF5_0%,#5416DD_100%)]"
                 size="md"
               />
             </div>
