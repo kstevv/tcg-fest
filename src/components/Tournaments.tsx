@@ -1,19 +1,23 @@
 // /src/components/Tournaments.tsx
-import Link from "next/link";
+"use client";
 
+import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+/* ─────────── Types ─────────── */
 export type Tournament = {
   id: string;
-  badge: string; // top-left pill
-  title?: string; // optional heading under badge
+  badge: string;
+  title?: string;
   format: string;
   structure: string;
   time: string;
   entry: string;
   prizes: string[];
-  cta: { label: string; href: string };
+  cta?: { label: string; href: string }; // ← CTA is optional now
 };
 
-/* ---------- Same visual shell & CTA as Ticket Tiers ---------- */
+/* ─────────── Visual shells ─────────── */
 const CARD_SHELL =
   "rounded-2xl ring-1 ring-white/10 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] " +
   "bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0)_100%)] " +
@@ -25,8 +29,7 @@ const CTA_CLASSES =
   "bg-[linear-gradient(90deg,#D52EF5_0%,#5416DD_100%)] hover:brightness-110 " +
   "active:translate-y-[1px] transition";
 
-/* -------------------- Latest tournament data -------------------- */
-
+/* ─────────── Data ─────────── */
 const ONE_PIECE_MAIN: Tournament = {
   id: "one-piece-main-sat",
   badge: "ONE PIECE — MAIN EVENT — SATURDAY",
@@ -84,11 +87,10 @@ const WIN_A_BOX_PODS: Tournament = {
     "Winner – 1 sealed booster box (or equivalent prize support)",
     "All players – 1 participation booster pack",
   ],
-  cta: { label: "JOIN A POD", href: "/tournaments/win-a-box" },
+  // cta intentionally omitted → no button on the third card
 };
 
-/* -------------------- Section -------------------- */
-
+/* ─────────── Section ─────────── */
 export default function TournamentsSection({
   tournaments = [ONE_PIECE_MAIN, RIFTBOUND_MAIN, WIN_A_BOX_PODS],
   heading = "Tournaments",
@@ -97,34 +99,144 @@ export default function TournamentsSection({
   heading?: string;
 }) {
   return (
-    <section className="relative w-full">
+    <section id="tournaments" className="relative w-full scroll-mt-28 md:scroll-mt-40">
       <div className="page-container py-16">
-        {/* Title */}
         <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
           {heading}
         </h2>
 
-        {/* Purple divider — same as Ticket Tiers */}
         <div className="mt-6">
           <div className="h-px w-full mb-8 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
         </div>
 
-        {/* Cards */}
-        <div className="grid gap-6 md:grid-cols-2">
+        {/* Desktop: 2-up grid with equal-height items */}
+        <div className="hidden md:grid gap-6 md:grid-cols-2 items-stretch">
           {tournaments.map((t) => (
-            <TournamentCard key={t.id} t={t} />
+            <div key={t.id} className="h-full">
+              <div className={`${CARD_SHELL} h-full flex flex-col`}>
+                <TournamentCardInner t={t} />
+                {/* CTA anchored to bottom, only when present */}
+                {t.cta && (
+                  <div className="mt-auto pt-6">
+                    <Link href={t.cta.href} className={CTA_CLASSES}>
+                      {t.cta.label}
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
           ))}
         </div>
+
+        {/* Mobile: single-slide carousel */}
+        <MobileCarousel items={tournaments} className="md:hidden" />
       </div>
     </section>
   );
 }
 
-/* -------------------- Card -------------------- */
+/* ─────────── Mobile Carousel (equal-height slides + fixed dots) ─────────── */
+function MobileCarousel({
+  items,
+  className = "",
+}: {
+  items: Tournament[];
+  className?: string;
+}) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [slideW, setSlideW] = useState<number>(0);
+  const [maxH, setMaxH] = useState<number>(0);
+  const [index, setIndex] = useState(0);
 
-function TournamentCard({ t }: { t: Tournament }) {
+  useEffect(() => {
+    const measure = () => {
+      const cw = containerRef.current?.clientWidth ?? 0;
+      setSlideW(cw);
+      const heights = slideRefs.current.map((n) => n?.offsetHeight ?? 0);
+      setMaxH(Math.max(0, ...heights));
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    const c = containerRef.current;
+    const t = trackRef.current;
+    if (c) ro.observe(c);
+    if (t) ro.observe(t);
+    slideRefs.current.forEach((n) => n && ro.observe(n));
+    return () => ro.disconnect();
+  }, [items.length]);
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const handler = () => {
+      const i = Math.round(el.scrollLeft / (slideW || 1));
+      setIndex(i);
+    };
+    el.addEventListener("scroll", handler, { passive: true });
+    return () => el.removeEventListener("scroll", handler);
+  }, [slideW]);
+
+  const scrollTo = useCallback((i: number) => {
+    trackRef.current?.scrollTo({ left: i * slideW, behavior: "smooth" });
+  }, [slideW]);
+
   return (
-    <div className={CARD_SHELL}>
+    <div ref={containerRef} className={["relative", className].join(" ")}>
+      <div
+        ref={trackRef}
+        className="flex snap-x snap-mandatory overflow-x-auto no-scrollbar -mx-0"
+        style={{ paddingBottom: 56 }} // fixed space for dots
+      >
+        {items.map((t, i) => (
+          <div
+            key={t.id}
+            ref={(n) => (slideRefs.current[i] = n)}
+            className="snap-start shrink-0 px-0"
+            style={{ width: slideW || "100%" }}
+          >
+            <div
+              className={`${CARD_SHELL} flex flex-col h-full`}
+              style={{ minHeight: maxH || undefined }}
+            >
+              <TournamentCardInner t={t} />
+              {t.cta && (
+                <div className="mt-auto pt-6">
+                  <Link href={t.cta.href} className={CTA_CLASSES}>
+                    {t.cta.label}
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Dots */}
+      <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 md:hidden">
+        {items.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => scrollTo(i)}
+            className="pointer-events-auto h-2.5 w-2.5 rounded-full"
+            style={{
+              backgroundColor:
+                i === index ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.35)",
+            }}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────── Card inner content (no CTA here) ─────────── */
+function TournamentCardInner({ t }: { t: Tournament }) {
+  return (
+    <>
       {/* Badge */}
       <div className="flex items-center gap-2">
         <span className="inline-flex h-8 items-center rounded-full bg-neutral-800/80 px-3 text-xs font-bold uppercase tracking-wide text-white/90 ring-1 ring-white/15">
@@ -157,18 +269,10 @@ function TournamentCard({ t }: { t: Tournament }) {
           </ul>
         </div>
       </div>
-
-      {/* CTA (same gradient + shape as Ticket Tiers) */}
-      <div className="mt-6">
-        <Link href={t.cta.href} className={CTA_CLASSES}>
-          {t.cta.label}
-        </Link>
-      </div>
-    </div>
+    </>
   );
 }
 
-/* Single helper name (prevents duplicate identifier errors) */
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="border-b border-white/10 pb-3 last:border-b-0 last:pb-0">

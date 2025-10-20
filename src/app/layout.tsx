@@ -1,7 +1,9 @@
+// /src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer";
+import ApplicationModalProvider from "@/components/ModalProvider";
 
 export const metadata: Metadata = {
   title: "TCG Con 2025",
@@ -14,12 +16,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full">
-      {/* Use CSS variables from globals.css */}
       <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
-        <Header />
-        {/* No container or horizontal padding here; let pages/sections own their container */}
-        <main className="py-10">{children}</main>
-        <Footer />
+        <ApplicationModalProvider>
+          <Header />
+          <main className="py-10">{children}</main>
+          <Footer />
+        </ApplicationModalProvider>
       </body>
     </html>
   );

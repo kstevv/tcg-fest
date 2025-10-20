@@ -6,7 +6,6 @@ export type ProgramItem = {
   title: string;
   description: string;
   image: string;
-  // keeping href in the type is optional; it's ignored by the Card now
   href?: string;
 };
 
@@ -69,7 +68,10 @@ export default function ProgramSection({
   className = "",
 }: ProgramSectionProps) {
   return (
-    <section className={`relative w-full text-neutral-50 ${className}`}>
+    <section
+      id="experience"
+      className={`relative w-full text-neutral-50 scroll-mt-28 md:scroll-mt-40 ${className}`}
+    >
       <div className="page-container">
         {/* Header row */}
         <div className="grid grid-cols-1 items-start gap-6 pb-6 md:grid-cols-2">
@@ -109,7 +111,6 @@ function Card({ title, description, image }: ProgramItem) {
       "
       aria-label={title}
     >
-      {/* BG image */}
       <Image
         src={image}
         alt=""
@@ -118,17 +119,9 @@ function Card({ title, description, image }: ProgramItem) {
         sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
         className="z-0 object-cover object-center transition-transform duration-500 will-change-transform group-hover:scale-[1.03]"
       />
-
-      {/* Global dark tint */}
       <div className="pointer-events-none absolute inset-0 z-10 bg-black/35" />
-
-      {/* Strong bottom ramp (covers ~60% height) */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[60%] bg-gradient-to-t from-black/92 via-black/75 to-transparent" />
-
-      {/* Inset inner shadow (deepens lower third) */}
       <div className="pointer-events-none absolute inset-0 z-10 shadow-[inset_0_-80px_120px_-20px_rgba(0,0,0,0.95)]" />
-
-      {/* Content */}
       <div className="absolute inset-x-0 bottom-0 z-20 space-y-2 p-6">
         <h3 className="text-xl font-semibold tracking-wide">{title}</h3>
         <p className="text-sm text-neutral-200/90">{description}</p>

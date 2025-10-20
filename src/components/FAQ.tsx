@@ -1,6 +1,8 @@
+// /src/components/FAQ.tsx
 "use client";
 
 import { useState } from "react";
+import type { JSX } from "react";
 
 export type FAQItem = { q: string; a: string };
 
@@ -11,11 +13,11 @@ export default function FAQSection({
   items = DEFAULT_FAQ,
 }: {
   items?: FAQItem[];
-}) {
+}): JSX.Element {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section className="relative w-full">
+    <section id="faq" className="relative w-full scroll-mt-28 md:scroll-mt-40">
       {/* Match site-wide width/padding */}
       <div className="page-container py-16">
         {/* Title — left aligned */}
@@ -105,30 +107,27 @@ export default function FAQSection({
   );
 }
 
-/* ---------- Icons ---------- */
-function PlusIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      aria-hidden="true"
-      className="fill-current"
-    >
-      <path d="M6 0h2v6h6v2H8v6H6V8H0V6h6z" />
-    </svg>
-  );
-}
-function CloseIcon() {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      aria-hidden="true"
-      className="fill-current"
-    >
-      <path d="M10.95 1.05 1.05 10.95 0 9.9 9.9 0l1.05 1.05ZM9.9 10.95 0 1.05 1.05 0l9.9 9.9-1.05 1.05Z" />
-    </svg>
-  );
-}
+/* ---------- Icons (typed) ---------- */
+const PlusIcon: React.FC = (): JSX.Element => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 14 14"
+    aria-hidden="true"
+    className="fill-current"
+  >
+    <path d="M6 0h2v6h6v2H8v6H6V8H0V6h6z" />
+  </svg>
+);
+
+const CloseIcon: React.FC = (): JSX.Element => (
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 12 12"
+    aria-hidden="true"
+    className="fill-current"
+  >
+    <path d="M10.95 1.05 1.05 10.95 0 9.9 9.9 0l1.05 1.05ZM9.9 10.95 0 1.05 1.05 0l9.9 9.9-1.05 1.05Z" />
+  </svg>
+);

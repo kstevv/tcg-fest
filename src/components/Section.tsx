@@ -3,11 +3,22 @@ type Props = {
   cta?: { href: string; label: string };
   children: React.ReactNode;
   className?: string;
+  /** Optional anchor for smooth-scroll targets */
+  id?: string;
 };
 
-export default function Section({ title, cta, children, className = "" }: Props) {
+export default function Section({
+  title,
+  cta,
+  children,
+  className = "",
+  id,
+}: Props) {
   return (
-    <section className={`mt-12 ${className}`}>
+    <section
+      id={id}
+      className={`mt-12 scroll-mt-28 md:scroll-mt-40 ${className}`}
+    >
       <div className="page-container">
         <div className="mb-5 flex items-baseline justify-between gap-6">
           <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>

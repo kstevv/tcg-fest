@@ -6,30 +6,30 @@ export default function Footer() {
     <footer className="bg-[radial-gradient(80%_120%_at_10%_0%,rgba(105,227,241,.08),transparent_60%),radial-gradient(80%_120%_at_90%_100%,rgba(244,114,182,.08),transparent_60%)]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        {/* Top badges */}
-        <div className="flex flex-wrap items-center gap-4 pt-10">
-          <Ribbon href="/sponsor" label="Sponsor" className="bg-[#D52EF5] text-white" />
-          <Ribbon href="/early-access" label="Tickets" className="bg-[#5416DD] text-white" />
-        </div>
+        {/* Social rows — left: Follow us, right: Brought to you by Special Delivery */}
+        <div className="pt-10 grid gap-10 md:grid-cols-2">
+          {/* Left */}
+          <div>
+            <h3 className="text-2xl font-extrabold tracking-tight text-white">Follow us:</h3>
+            <ul className="mt-4 flex flex-wrap items-center gap-4">
+              <Social href="#" label="X"><XIcon /></Social>
+              <Social href="#" label="YouTube"><YouTubeIcon /></Social>
+              <Social href="#" label="Instagram"><InstagramIcon /></Social>
+            </ul>
+          </div>
 
-        {/* Follow us */}
-        <div className="mt-10">
-          <h3 className="text-2xl font-extrabold tracking-tight text-white">Follow us:</h3>
-          <ul className="mt-4 flex flex-wrap items-center gap-4">
-            <Social href="#" label="X"><XIcon /></Social>
-            <Social href="#" label="YouTube"><YouTubeIcon /></Social>
-            <Social href="#" label="Instagram"><InstagramIcon /></Social>
-          </ul>
+          {/* Right */}
+          <div className="md:text-right">
+            <h3 className="text-2xl font-extrabold tracking-tight text-white">
+              Produced by Special Delivery:
+            </h3>
+            <ul className="mt-4 flex flex-wrap items-center gap-4 md:justify-end">
+              <Social href="#" label="X"><XIcon /></Social>
+              <Social href="#" label="YouTube"><YouTubeIcon /></Social>
+              <Social href="#" label="Instagram"><InstagramIcon /></Social>
+            </ul>
+          </div>
         </div>
-
-       {/*  <div className="mt-10">
-          <h3 className="text-2xl font-extrabold tracking-tight text-white">Presented by Special Delivery:</h3>
-          <ul className="mt-4 flex flex-wrap items-center gap-4">
-            <Social href="#" label="X"><XIcon /></Social>
-            <Social href="#" label="YouTube"><YouTubeIcon /></Social>
-            <Social href="#" label="Instagram"><InstagramIcon /></Social>
-          </ul>
-        </div>  */}
 
         {/* --- Purple divider --- */}
         <div className="mt-12">
@@ -53,23 +53,6 @@ export default function Footer() {
 }
 
 /* ---------- Helpers ---------- */
-
-function Ribbon({
-  href,
-  label,
-  className = "",
-}: { href: string; label: string; className?: string }) {
-  return (
-    <Link
-      href={href}
-      className={`relative inline-flex items-center rounded-md px-5 py-2 text-[12px] font-extrabold tracking-[0.25em] uppercase shadow ring-1 ring-black/15 ${className}`}
-    >
-      <span>{label}</span>
-      <span className="pointer-events-none absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1 bg-current/0 [clip-path:polygon(0_0,100%_50%,0_100%)]" />
-      <span className="pointer-events-none absolute left-0 top-1/2 h-3 w-3 -translate-y-1/2 -translate-x-1 bg-current/0 [clip-path:polygon(100%_0,0_50%,100%_100%)]" />
-    </Link>
-  );
-}
 
 function Social({
   href,
@@ -96,7 +79,6 @@ function Social({
 }
 
 /* ---------- Icons (inline SVG) ---------- */
-
 
 function XIcon() {
   return (
