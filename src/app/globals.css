@@ -24,6 +24,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* /src/app/globals.css (or wherever your global styles live) */
+.ios-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
 @layer utilities {
   /* Site-wide page container */
   .page-container {
