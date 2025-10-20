@@ -66,6 +66,7 @@ function Modal({
   onClose: () => void;
   onTabChange: (t: Tab) => void;
 }) {
+  // Focus first input when opened
   const firstInputRef = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
     const t = setTimeout(() => firstInputRef.current?.focus(), 50);
@@ -79,32 +80,32 @@ function Modal({
       ? "SUBMIT VENDOR APPLICATION"
       : "SUBMIT PRESS APPLICATION";
 
-  // Dark, solid inputs like your reference
+  // Solid, dark input styling + focus ring
   const FIELD =
     "w-full rounded-[10px] bg-[#1a1a22] border border-white/10 px-[0.85rem] py-[0.7rem] text-white outline-none " +
     "placeholder:text-white/50 focus:border-[rgba(213,46,245,0.6)] focus:[box-shadow:0_0_0_2px_rgba(213,46,245,0.2)]";
 
   return (
     <div aria-modal="true" role="dialog" className="fixed inset-0 z-[9999]">
-      {/* Backdrop (more opaque; no see-through) */}
+      {/* Backdrop (opaque) */}
       <button
         aria-label="Close application modal"
         onClick={onClose}
         className="absolute inset-0 bg-black/80"
       />
 
-      {/* Wrapper: fullscreen on mobile, centered on desktop */}
-      <div className="relative z-10 flex h-full w-full items-center justify-center md:p-6">
+      {/* Wrapper: fullscreen on mobile; centered on desktop, no wasted space */}
+      <div className="relative z-10 flex h-full w-full items-center justify-center md:py-10">
         <div
           className="
             relative text-white
             w-screen h-[100svh] rounded-none
-            md:w-[min(96vw,1280px)] md:max-h-[92vh] md:h-auto md:rounded-2xl
+            md:w-[min(95vw,1400px)] md:h-auto md:max-h-[85vh] md:rounded-2xl
             bg-[#121219] ring-1 ring-white/10 shadow-2xl
             overflow-hidden
           "
         >
-          {/* Sticky header with safe-area padding + extra space */}
+          {/* Sticky header with safe-area padding + extra top space */}
           <div className="sticky top-0 z-10 px-5 md:px-8 pb-3 pt-[calc(env(safe-area-inset-top)+14px)] bg-[#121219] border-b border-white/10">
             <div className="flex items-center gap-2">
               <div role="tablist" aria-label="Get involved" className="flex flex-1 gap-2 overflow-x-auto">
@@ -131,7 +132,7 @@ function Modal({
             </div>
           </div>
 
-          {/* Scrollable form area */}
+          {/* Scrollable content (form). When capped by max-h, this scrolls. */}
           <div className="overflow-y-auto overscroll-contain px-5 md:px-8 pt-4 pb-[calc(env(safe-area-inset-bottom)+18px)]">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <Field label="NAME *">
@@ -192,6 +193,7 @@ function Modal({
   );
 }
 
+/** Active tab uses the same gradient as the submit button */
 function TabButton({
   active,
   onClick,
@@ -201,16 +203,24 @@ function TabButton({
   onClick: () => void;
   children: React.ReactNode;
 }) {
-  return (
+  const base =
+    "rounded-md px-3 py-1.5 text-xs font-bold uppercase tracking-wide ring-1 transition focus:outline-none focus-visible:ring-2";
+  return active ? (
     <button
       onClick={onClick}
       role="tab"
-      aria-selected={active}
-      className={`rounded-md px-3 py-1.5 text-xs font-bold uppercase tracking-wide ring-1 transition ${
-        active
-          ? "bg-white/10 ring-white/15 text-white"
-          : "bg-white/5 ring-white/10 text-white/90 hover:bg-white/8"
-      }`}
+      aria-selected="true"
+      className={`${base} text-white ring-white/15`}
+      style={{ background: "linear-gradient(90deg,#D52EF5 0%,#5416DD 100%)" }}
+    >
+      {children}
+    </button>
+  ) : (
+    <button
+      onClick={onClick}
+      role="tab"
+      aria-selected="false"
+      className={`${base} bg-white/5 ring-white/10 text-white/90 hover:bg-white/8`}
     >
       {children}
     </button>
@@ -236,10 +246,12 @@ function useLockBodyScroll(lock: boolean) {
     const { body, documentElement: html } = document;
     const scrollY = window.scrollY || window.pageYOffset;
 
+    // Compensate for scrollbar (desktop) to avoid layout shift
     const scrollbarWidth = window.innerWidth - html.clientWidth;
     const prevPaddingRight = body.style.paddingRight;
 
     if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
+    // Fix body in place (iOS-friendly)
     body.style.position = "fixed";
     body.style.top = `-${scrollY}px`;
     body.style.left = "0";
