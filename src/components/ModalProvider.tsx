@@ -22,15 +22,13 @@ const Ctx = createContext<ModalCtx | null>(null);
 
 export function useApplicationModal() {
   const ctx = useContext(Ctx);
-  if (!ctx) throw new Error("useApplicationModal must be used within ApplicationModalProvider");
+  if (!ctx) {
+    throw new Error("useApplicationModal must be used within ApplicationModalProvider");
+  }
   return ctx;
 }
 
-export default function ApplicationModalProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ApplicationModalProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("sponsor");
 
@@ -48,12 +46,13 @@ export default function ApplicationModalProvider({
     return () => document.removeEventListener("keydown", onKey);
   }, [close]);
 
+  // Lock background scroll while open
+  useLockBodyScroll(isOpen);
+
   return (
     <Ctx.Provider value={{ open, close, setTab }}>
       {children}
-      {isOpen && (
-        <Modal tab={tab} onClose={close} onTabChange={setTab} />
-      )}
+      {isOpen && <Modal tab={tab} onClose={close} onTabChange={setTab} />}
     </Ctx.Provider>
   );
 }
@@ -67,7 +66,6 @@ function Modal({
   onClose: () => void;
   onTabChange: (t: Tab) => void;
 }) {
-  // simple focus catch on open
   const firstInputRef = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
     const t = setTimeout(() => firstInputRef.current?.focus(), 50);
@@ -81,107 +79,115 @@ function Modal({
       ? "SUBMIT VENDOR APPLICATION"
       : "SUBMIT PRESS APPLICATION";
 
+  // Dark, solid inputs like your reference
+  const FIELD =
+    "w-full rounded-[10px] bg-[#1a1a22] border border-white/10 px-[0.85rem] py-[0.7rem] text-white outline-none " +
+    "placeholder:text-white/50 focus:border-[rgba(213,46,245,0.6)] focus:[box-shadow:0_0_0_2px_rgba(213,46,245,0.2)]";
+
   return (
-    <div
-      aria-modal="true"
-      role="dialog"
-      className="fixed inset-0 z-[9999] flex items-center justify-center"
-    >
-      {/* Backdrop */}
+    <div aria-modal="true" role="dialog" className="fixed inset-0 z-[9999]">
+      {/* Backdrop (more opaque; no see-through) */}
       <button
         aria-label="Close application modal"
         onClick={onClose}
-        className="absolute inset-0 bg-black/60 backdrop-blur"
+        className="absolute inset-0 bg-black/80"
       />
 
-      {/* Panel */}
-      <div className="relative w-[min(92vw,980px)] rounded-2xl ring-1 ring-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0)_100%)] shadow-[0_50px_140px_-40px_rgba(0,0,0,0.7)] p-5 md:p-7 text-white">
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-md bg-white/8 hover:bg-white/12 ring-1 ring-white/10"
-          aria-label="Close"
-          title="Close"
+      {/* Wrapper: fullscreen on mobile, centered on desktop */}
+      <div className="relative z-10 flex h-full w-full items-center justify-center md:p-6">
+        <div
+          className="
+            relative text-white
+            w-screen h-[100svh] rounded-none
+            md:w-[min(96vw,1280px)] md:max-h-[92vh] md:h-auto md:rounded-2xl
+            bg-[#121219] ring-1 ring-white/10 shadow-2xl
+            overflow-hidden
+          "
         >
-          ×
-        </button>
+          {/* Sticky header with safe-area padding + extra space */}
+          <div className="sticky top-0 z-10 px-5 md:px-8 pb-3 pt-[calc(env(safe-area-inset-top)+14px)] bg-[#121219] border-b border-white/10">
+            <div className="flex items-center gap-2">
+              <div role="tablist" aria-label="Get involved" className="flex flex-1 gap-2 overflow-x-auto">
+                <TabButton active={tab === "sponsor"} onClick={() => onTabChange("sponsor")}>
+                  SPONSOR
+                </TabButton>
+                <TabButton active={tab === "vendor"} onClick={() => onTabChange("vendor")}>
+                  VENDOR
+                </TabButton>
+                <TabButton active={tab === "press"} onClick={() => onTabChange("press")}>
+                  PRESS
+                </TabButton>
+              </div>
 
-        {/* Tabs */}
-        <div className="mb-5 flex gap-2">
-          <TabButton active={tab === "sponsor"} onClick={() => onTabChange("sponsor")}>
-            SPONSOR
-          </TabButton>
-          <TabButton active={tab === "vendor"} onClick={() => onTabChange("vendor")}>
-            VENDOR
-          </TabButton>
-          <TabButton active={tab === "press"} onClick={() => onTabChange("press")}>
-            PRESS
-          </TabButton>
-        </div>
+              {/* Close button (kept visible and aligned) */}
+              <button
+                onClick={onClose}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/8 hover:bg-white/12 ring-1 ring-white/10"
+                aria-label="Close"
+                title="Close"
+              >
+                ×
+              </button>
+            </div>
+          </div>
 
-        {/* Fake form (fields are shared; you can wire to your API later) */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Field label="NAME *">
-            <input ref={firstInputRef} className="field" placeholder="Jane Doe" />
-          </Field>
-          <Field label="BRAND *">
-            <input className="field" placeholder="Company / Brand" />
-          </Field>
-          <Field label="EMAIL *">
-            <input className="field" placeholder="name@email.com" />
-          </Field>
-          <Field label="PHONE *">
-            <input className="field" placeholder="(555) 123-4567" />
-          </Field>
-          <Field label="CITY">
-            <input className="field" placeholder="Austin, TX" />
-          </Field>
-          <Field label="NUMBER OF BOOTHS">
-            <input className="field" placeholder="1" />
-          </Field>
-          <div className="md:col-span-2">
-            <Field label={tab === "press" ? "WHAT YOU’LL COVER" : tab === "vendor" ? "WHAT THEY SELL" : "HOW YOU’D LIKE TO PARTICIPATE"}>
-              <textarea
-                rows={4}
-                className="field resize-y"
-                placeholder={
-                  tab === "press"
-                    ? "Editorial plan, interviews, outlets…"
-                    : tab === "vendor"
-                    ? "Singles, sealed product, accessories…"
-                    : "Booth, brand placement, activations…"
-                }
-              />
-            </Field>
+          {/* Scrollable form area */}
+          <div className="overflow-y-auto overscroll-contain px-5 md:px-8 pt-4 pb-[calc(env(safe-area-inset-bottom)+18px)]">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <Field label="NAME *">
+                <input ref={firstInputRef} className={FIELD} placeholder="Jane Doe" />
+              </Field>
+              <Field label="BRAND *">
+                <input className={FIELD} placeholder="Company / Brand" />
+              </Field>
+              <Field label="EMAIL *">
+                <input className={FIELD} placeholder="name@email.com" />
+              </Field>
+              <Field label="PHONE *">
+                <input className={FIELD} placeholder="(555) 123-4567" />
+              </Field>
+              <Field label="CITY">
+                <input className={FIELD} placeholder="Austin, TX" />
+              </Field>
+              <Field label="NUMBER OF BOOTHS">
+                <input className={FIELD} placeholder="1" />
+              </Field>
+              <div className="md:col-span-2">
+                <Field
+                  label={
+                    tab === "press"
+                      ? "WHAT YOU’LL COVER"
+                      : tab === "vendor"
+                      ? "WHAT THEY SELL"
+                      : "HOW YOU’D LIKE TO PARTICIPATE"
+                  }
+                >
+                  <textarea
+                    rows={4}
+                    className={FIELD + " resize-y"}
+                    placeholder={
+                      tab === "press"
+                        ? "Editorial plan, interviews, outlets…"
+                        : tab === "vendor"
+                        ? "Singles, sealed product, accessories…"
+                        : "Booth, brand placement, activations…"
+                    }
+                  />
+                </Field>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                className="rounded-xl px-6 py-3 font-extrabold uppercase tracking-[0.22em] text-white shadow ring-1 ring-black/15 active:translate-y-[1px]"
+                style={{ background: "linear-gradient(90deg,#D52EF5 0%,#5416DD 100%)" }}
+              >
+                {submitLabel}
+              </button>
+            </div>
           </div>
         </div>
-
-        <div className="mt-6 flex justify-end">
-          <button
-            className="rounded-xl px-6 py-3 font-extrabold uppercase tracking-[0.22em] text-white shadow ring-1 ring-black/15 active:translate-y-[1px]"
-            style={{ background: "linear-gradient(90deg,#D52EF5 0%,#5416DD 100%)" }}
-          >
-            {submitLabel}
-          </button>
-        </div>
       </div>
-
-      {/* field styling */}
-      <style jsx>{`
-        .field {
-          width: 100%;
-          border-radius: 0.625rem;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          padding: 0.7rem 0.85rem;
-          outline: none;
-          color: white;
-        }
-        .field:focus {
-          border-color: rgba(213, 46, 245, 0.6);
-          box-shadow: 0 0 0 2px rgba(213, 46, 245, 0.2);
-        }
-      `}</style>
     </div>
   );
 }
@@ -198,6 +204,8 @@ function TabButton({
   return (
     <button
       onClick={onClick}
+      role="tab"
+      aria-selected={active}
       className={`rounded-md px-3 py-1.5 text-xs font-bold uppercase tracking-wide ring-1 transition ${
         active
           ? "bg-white/10 ring-white/15 text-white"
@@ -209,17 +217,48 @@ function TabButton({
   );
 }
 
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block text-[11px] font-bold uppercase tracking-wide text-white/80">
       {label}
       <div className="mt-1.5">{children}</div>
     </label>
   );
+}
+
+/* -----------------------
+   Body scroll lock hook
+   ----------------------- */
+function useLockBodyScroll(lock: boolean) {
+  useEffect(() => {
+    if (!lock) return;
+
+    const { body, documentElement: html } = document;
+    const scrollY = window.scrollY || window.pageYOffset;
+
+    const scrollbarWidth = window.innerWidth - html.clientWidth;
+    const prevPaddingRight = body.style.paddingRight;
+
+    if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    body.style.overscrollBehavior = "contain";
+    html.style.overscrollBehavior = "contain";
+
+    return () => {
+      const y = Math.abs(parseInt(body.style.top || "0", 10)) || 0;
+      body.style.position = "";
+      body.style.top = "";
+      body.style.left = "";
+      body.style.right = "";
+      body.style.width = "";
+      body.style.overscrollBehavior = "";
+      body.style.paddingRight = prevPaddingRight;
+      html.style.overscrollBehavior = "";
+      window.scrollTo(0, y);
+    };
+  }, [lock]);
 }
