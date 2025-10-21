@@ -20,9 +20,15 @@ export default function HomePage() {
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
               TCGFest 2026
             </h1>
+
+            {/* Mobile-only line breaks + bullet hidden on mobile */}
             <p className="mt-4 text-lg md:text-xl opacity-90">
-              Two days of tournaments, vendors, trading, and panels. January 31st &amp; Feb 1st •
-              Travis County Exposition Center
+              <span>Two days of tournaments, vendors, trading, and panels. </span>
+              <br className="block md:hidden" />
+              <span>January 31st &amp; Feb 1st</span>
+              <br className="block md:hidden" />
+              <span className="hidden md:inline"> • </span>
+              <span>Travis County Exposition Center</span>
             </p>
 
             <div className="mt-6 flex gap-3">

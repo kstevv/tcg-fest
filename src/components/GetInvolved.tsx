@@ -1,9 +1,8 @@
-// /src/components/GetInvolved.tsx
 "use client";
 
 import { useApplicationModal } from "@/components/ModalProvider";
 
-/* ---------- Shared visual shell (matches Ticket Tiers & Tournaments) ---------- */
+/* ---------- Shared visual shell ---------- */
 const CARD_SHELL =
   "rounded-2xl ring-1 ring-white/10 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] " +
   "bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0)_100%)] " +
@@ -43,7 +42,7 @@ export default function GetInvolved() {
             <div className="mt-6">
               <button
                 onClick={() => open("sponsor")}
-                className="relative inline-flex items-center justify-center rounded-md font-extrabold uppercase leading-none ring-1 ring-black/15 shadow transition active:translate-y-[1px] hover:brightness-110 h-10 px-5 text-[12px] tracking-[0.22em] text-white"
+                className="relative inline-flex items-center justify-center rounded-md font-extrabold uppercase leading-none ring-1 ring-black/15 shadow transition active:translate-y-[1px] hover:brightness-110 h-10 px-5 text-[12px] tracking-[0.22em] text-white cursor-pointer"
                 style={{ background: "linear-gradient(90deg,#D52EF5 0%,#5416DD 100%)" }}
               >
                 SPONSOR
@@ -69,7 +68,7 @@ export default function GetInvolved() {
             <div className="mt-6">
               <button
                 onClick={() => open("vendor")}
-                className="relative inline-flex items-center justify-center rounded-md font-extrabold uppercase leading-none ring-1 ring-black/15 shadow transition active:translate-y-[1px] hover:brightness-110 h-10 px-5 text-[12px] tracking-[0.22em] text-white"
+                className="relative inline-flex items-center justify-center rounded-md font-extrabold uppercase leading-none ring-1 ring-black/15 shadow transition active:translate-y-[1px] hover:brightness-110 h-10 px-5 text-[12px] tracking-[0.22em] text-white cursor-pointer"
                 style={{ background: "linear-gradient(90deg,#D52EF5 0%,#5416DD 100%)" }}
               >
                 APPLY TO VEND
@@ -95,7 +94,7 @@ export default function GetInvolved() {
             <div className="mt-6">
               <button
                 onClick={() => open("press")}
-                className="relative inline-flex items-center justify-center rounded-md font-extrabold uppercase leading-none ring-1 ring-black/15 shadow transition active:translate-y-[1px] hover:brightness-110 h-10 px-5 text-[12px] tracking-[0.22em] text-white"
+                className="relative inline-flex items-center justify-center rounded-md font-extrabold uppercase leading-none ring-1 ring-black/15 shadow transition active:translate-y-[1px] hover:brightness-110 h-10 px-5 text-[12px] tracking-[0.22em] text-white cursor-pointer"
                 style={{ background: "linear-gradient(90deg,#D52EF5 0%,#5416DD 100%)" }}
               >
                 APPLY FOR PRESS

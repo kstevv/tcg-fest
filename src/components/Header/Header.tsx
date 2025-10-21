@@ -17,7 +17,7 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-3 rounded-full pl-1 pr-3 py-1">
             <Image
               src="/images/logos/tcgfest-logo.png"
-              alt="TCG Con"
+              alt="TCGFest"
               width={96}
               height={96}
               priority
@@ -31,24 +31,22 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-8">
             <NavLink href="/">HOME</NavLink>
 
-            {/* ABOUT dropdown (keeps your original letter spacing on the trigger) */}
+            {/* ABOUT dropdown */}
             <AboutDropdown />
 
-            {/* SPONSOR — restore original solid pink */}
+            {/* SPONSOR */}
             <button
               onClick={() => open("sponsor")}
-              className="relative inline-flex items-center justify-center rounded-md font-extrabold uppercase leading-none
-                         ring-1 ring-black/15 shadow transition active:translate-y-[1px] hover:brightness-110
-                         h-11 px-6 text-[12px] tracking-[0.25em] text-white"
+              className="relative inline-flex items-center justify-center rounded-md font-extrabold uppercase ring-1 ring-black/15 shadow h-11 px-6 text-[12px] tracking-[0.25em] text-white hover:brightness-110 active:translate-y-[1px] transition cursor-pointer"
               style={{ background: "#D52EF5" }}
             >
-              <span>SPONSOR</span>
+              <span>Get Involved</span>
               <span className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 h-5 w-5 [clip-path:polygon(0_0,100%_50%,0_100%)]" />
               <span className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 h-4 w-4 [clip-path:polygon(100%_0,0_50%,100%_100%)]" />
               <span className="pointer-events-none absolute bottom-[-2px] left-1/2 h-1 w-10 -translate-x-1/2 rounded bg-black/15" />
             </button>
 
-            {/* TICKETS — unchanged */}
+            {/* TICKETS */}
             <Ribbon
               href="/#tickets"
               label="TICKETS"
@@ -78,7 +76,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   );
 }
 
-/* ---------- Ribbon helper (unchanged) ---------- */
+/* ---------- Ribbon helper ---------- */
 function Ribbon({
   href,
   label,
@@ -98,7 +96,7 @@ function Ribbon({
       : "h-9 px-4 text-[11px] tracking-[0.18em]";
 
   const rightNotch = size === "lg" ? "h-5 w-5" : size === "md" ? "h-4 w-4" : "h-3.5 w-3.5";
-  const leftNotch = size === "lg" ? "h-4 w-4" : size === "md" ? "h-3.5 w-3.5" : "h-3 w-3";
+  const leftNotch  = size === "lg" ? "h-4 w-4" : size === "md" ? "h-3.5 w-3.5" : "h-3 w-3";
   const bottomTabWidth = size === "lg" ? "w-10" : size === "md" ? "w-8" : "w-7";
 
   return (
