@@ -4,7 +4,7 @@ export const TCGFEST_FAQ: FAQItem[] = [
   // Tickets & entry
   {
     q: "Do I need a ticket for each day?",
-    a: "Yes—single-day tickets are valid only for the date listed. If you want both days, purchase both days or a weekend bundle if available."
+    a: "Yes—single-day tickets are valid only for the date listed. Purchase a 2-day ticket if you plan to attend on both days."
   },
   {
     q: "Are tickets refundable or transferable?",
@@ -13,10 +13,6 @@ export const TCGFEST_FAQ: FAQItem[] = [
   {
     q: "Is re-entry allowed?",
     a: "Yes. You’ll receive a wristband at check-in; keep it on for same-day re-entry."
-  },
-  {
-    q: "Is parking free?",
-    a: "Yes—on-site parking is free for attendees."
   },
    {
     q: "Are kids free?",
@@ -69,6 +65,10 @@ export const TCGFEST_FAQ: FAQItem[] = [
   {
     q: "Where is the event and how do I park?",
     a: "Travis County Exposition Center. Follow on-site signage to attendee parking."
+  },
+    {
+    q: "Is parking free?",
+    a: "Yes—on-site parking is free for attendees."
   },
   {
     q: "Is the venue ADA accessible?",

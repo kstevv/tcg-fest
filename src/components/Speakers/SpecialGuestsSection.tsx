@@ -34,7 +34,7 @@ export default function SpecialGuestsSection({
     >
       <div className="page-container py-16">
         {/* Header row */}
-        <div className="grid grid-cols-1 items-start gap-6 pb-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 items-start gap-6 pb-4 lg:pb-6 md:grid-cols-2">
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
             {title}
           </h2>

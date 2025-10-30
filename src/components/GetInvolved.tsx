@@ -14,7 +14,8 @@ export default function GetInvolved() {
   return (
     <section aria-labelledby="get-involved" className="relative isolate mb-0 pb-10">
       <div className="page-container py-16 md:py-20">
-        <div className="mb-6">
+        {/* Header */}
+        <div className="mb-3 md:mb-6">
           <h2
             id="get-involved"
             className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white"
@@ -23,9 +24,10 @@ export default function GetInvolved() {
           </h2>
         </div>
 
-        {/* divider */}
-        <div className="mx-auto h-px w-full max-w-7xl mb-8 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
+        {/* Divider — tighter on mobile, same on desktop */}
+        <div className="mx-auto h-px w-full max-w-7xl mb-5 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
 
+        {/* Cards */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {/* Sponsors */}
           <article className={CARD_SHELL}>

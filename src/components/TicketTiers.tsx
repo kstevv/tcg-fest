@@ -59,14 +59,14 @@ export default function TicketTiers() {
       <div className="page-container">
         <h2
           id="ticket-hero-heading"
-          className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white pb-6"
+          className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white pb-3 md:pb-6"
         >
           Ticket Tiers
         </h2>
 
-        {/* Divider */}
+        {/* Divider — tighter on mobile, desktop unchanged */}
         <div className="mt-0">
-          <div className="h-px w-full mb-8 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
+          <div className="h-px w-full mb-5 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
         </div>
 
         {/* Cards */}

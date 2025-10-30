@@ -14,7 +14,7 @@ export default function HomePage() {
   return (
     <>
       {/* Hero */}
-      <header className="pt-8 md:pt-12">
+      <header className="pt-0 md:pt-12">
         <div className="page-container">
           <section className="rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 text-white p-8 md:p-14 shadow-card">
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">

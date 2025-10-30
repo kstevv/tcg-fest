@@ -1,4 +1,3 @@
-// /src/components/FAQ.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,7 +5,6 @@ import type { JSX } from "react";
 
 export type FAQItem = { q: string; a: string };
 
-// Local safe default so the component compiles even if nothing is passed.
 const DEFAULT_FAQ: FAQItem[] = [];
 
 export default function FAQSection({
@@ -18,16 +16,15 @@ export default function FAQSection({
 
   return (
     <section id="faq" className="relative w-full scroll-mt-28 md:scroll-mt-40">
-      {/* Match site-wide width/padding */}
       <div className="page-container py-16">
-        {/* Title — left aligned */}
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white">
+        {/* Title */}
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white pb-2 md:pb-0">
           Frequently Asked Questions
         </h2>
 
-        {/* Purple divider (same faded style as Ticket Tiers) */}
-        <div className="mt-6">
-          <div className="h-px w-full mb-8 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
+        {/* Divider — tighter on mobile */}
+        <div className="mt-0">
+          <div className="h-px w-full mb-5 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
         </div>
 
         {/* Accordion */}
@@ -107,7 +104,7 @@ export default function FAQSection({
   );
 }
 
-/* ---------- Icons (typed) ---------- */
+/* ---------- Icons ---------- */
 const PlusIcon: React.FC = (): JSX.Element => (
   <svg
     width="14"

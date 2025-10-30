@@ -20,14 +20,14 @@ const DEFAULT_ITEMS: ProgramItem[] = [
   {
     title: "CHAMPIONSHIP TOURNAMENTS",
     description:
-      "Main events and side events across MTG, Pokémon, Yu-Gi-Oh!, Lorcana, and more.",
+      "Main events and side events across One Piece, Riftbound, Gundham, Lorcana, MTG, and more.",
     image: "/images/program/tournaments.png",
     href: "/tournaments",
   },
   {
     title: "VENDOR MARKETPLACE",
     description:
-      "Sealed product, singles, accessories, vintage grails—shop dozens of top vendors.",
+      "Sealed product, singles, accessories, vintage grails — shop dozens of top vendors.",
     image: "/images/program/vendors.png",
     href: "/vendors",
   },
@@ -41,7 +41,7 @@ const DEFAULT_ITEMS: ProgramItem[] = [
   {
     title: "SPECIAL GUESTS & SIGNINGS",
     description:
-      "Creators, artists, casters, and pros—meet, greet, and grab autographs.",
+      "Creators, artists, casters, and pros — meet, greet, and grab autographs.",
     image: "/images/program/signings.png",
     href: "/guests",
   },
@@ -77,8 +77,8 @@ export default function ProgramSection({
       />
 
       <div className="page-container">
-        {/* Header row */}
-        <div className="grid grid-cols-1 items-start gap-6 pb-6 md:grid-cols-2">
+        {/* Header row — even tighter spacing */}
+        <div className="grid grid-cols-1 items-start gap-4 pb-1 md:grid-cols-2">
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
             {title}
           </h2>
@@ -87,9 +87,9 @@ export default function ProgramSection({
           </p>
         </div>
 
-        {/* Purple divider */}
+        {/* Purple divider — perfectly matched to Special Guests */}
         <div>
-          <div className="mx-auto h-px w-full max-w-7xl mb-8 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
+          <div className="mx-auto h-px w-full max-w-7xl mb-5 md:mb-8 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
         </div>
 
         {/* Cards grid */}
@@ -120,7 +120,7 @@ function Card({ title, description, image }: ProgramItem) {
         alt=""
         fill
         priority={false}
-        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+        sizes='(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw'
         className="z-0 object-cover object-center transition-transform duration-500 will-change-transform group-hover:scale-[1.03]"
       />
       <div className="pointer-events-none absolute inset-0 z-10 bg-black/35" />

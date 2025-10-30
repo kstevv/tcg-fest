@@ -77,7 +77,7 @@ export default function Header() {
   return (
     <header className="sticky top-3 z-[80]">
       <div className="page-container">
-        <div className="flex items-center justify-between rounded-2xl bg-gradient-to-b from-[var(--color-lessdark)_20%] to-[rgba(19,19,19,0.4)] text-white shadow-xl ring-1 ring-white/10 backdrop-blur px-3 sm:px-5 py-1.5 sm:py-2">
+        <div className="flex items-center justify-between rounded-2xl bg-gradient-to-b from-[var(--color-lessdark)_20%] to-[rgba(19,19,19,0.4)] text-white shadow-xl ring-1 ring-white/10 backdrop-blur px-3 sm:px-4 py-0">
           {/* Brand */}
           <Link
             href="/"
@@ -125,7 +125,7 @@ export default function Header() {
               href="/#ticket-tiers"
               label="TICKETS"
               className="bg-[#5416DD] text-white"
-              size="md"
+              size="lg"
             />
           </nav>
 
@@ -172,7 +172,7 @@ export default function Header() {
               </MobileItem>
 
               {/* Section label: About */}
-              <p className="text-left px-1 mt-5 mb-3 text-xs font-bold uppercase tracking-[0.25em] text-white/60">
+              <p className="text-left px-1 mt-5 mb-3 text-xs font-bold uppercase text-white/60">
                 About
               </p>
 
