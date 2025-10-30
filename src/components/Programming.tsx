@@ -1,3 +1,4 @@
+// /src/components/Programming.tsx
 "use client";
 
 import Image from "next/image";
@@ -77,18 +78,20 @@ export default function ProgramSection({
       />
 
       <div className="page-container">
-        {/* Header row */}
-        <div className="grid grid-cols-1 items-start gap-6 pb-4 lg:pb-6 md:grid-cols-2">
+        {/* Header row (reduced bottom padding on mobile) */}
+        <div className="grid grid-cols-1 items-start gap-6 pb-1 md:pb-2 md:grid-cols-2">
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
             {title}
           </h2>
-          <p className="max-w-prose text-balance text-base text-neutral-300 md:justify-self-end">
-            {blurb}
-          </p>
+          {!!blurb && (
+            <p className="max-w-prose text-balance text-base text-neutral-300 md:justify-self-end">
+              {blurb}
+            </p>
+          )}
         </div>
 
-        {/* Purple divider */}
-        <div>
+        {/* Purple divider — tighter on mobile to match Tournaments */}
+        <div className="mt-2 md:mt-6">
           <div className="mx-auto h-px w-full max-w-7xl mb-8 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
         </div>
 
