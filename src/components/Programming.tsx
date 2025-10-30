@@ -68,10 +68,14 @@ export default function ProgramSection({
   className = "",
 }: ProgramSectionProps) {
   return (
-    <section
-      id="experience"
-      className={`relative w-full text-neutral-50 scroll-mt-28 md:scroll-mt-40 ${className}`}
-    >
+    <section className={`relative w-full text-neutral-50 ${className}`}>
+      {/* ✅ Anchor shim for perfect offset on mobile/desktop */}
+      <span
+        id="experience"
+        className="block -mt-16 pt-16 md:-mt-16 md:pt-16 lg:-mt-20 lg:pt-20"
+        aria-hidden="true"
+      />
+
       <div className="page-container">
         {/* Header row */}
         <div className="grid grid-cols-1 items-start gap-6 pb-6 md:grid-cols-2">

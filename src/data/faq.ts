@@ -8,7 +8,7 @@ export const TCGFEST_FAQ: FAQItem[] = [
   },
   {
     q: "Are tickets refundable or transferable?",
-    a: "Tickets are non-refundable. General admission tickets are transferable up to 48 hours before the show; tournament registrations are not transferable."
+    a: "All ticket sales are final and non-refundable."
   },
   {
     q: "Is re-entry allowed?",
@@ -84,7 +84,7 @@ export const TCGFEST_FAQ: FAQItem[] = [
   },
   {
     q: "Can I bring food or drinks?",
-    a: "TBD. Policies may vary by venue; sealed water is usually OK. We’ll post a final policy before the show."
+    a: "No outside food or beverages are permitted."
   },
   {
     q: "Is there a lost & found?",

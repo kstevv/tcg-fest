@@ -73,19 +73,13 @@ export default function ApplicationModal({
             <Form kind={kind} />
           </div>
 
-          {/* Footer */}
-          <div className="px-4 sm:px-6 pt-3 pb-20 sm:pb-6 border-t border-white/10">
-            {/* Consent line */}
+          {/* Footer — tighter space above/below consent, keep extra mobile bottom space */}
+          <div className="px-4 sm:px-6 pt-1 pb-16 sm:pt-3 sm:pb-6 border-t border-white/10">
             <ConsentCheckbox />
-
-            {/* Submit button */}
             <button
               type="button"
-              className="mt-4 cursor-pointer inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 rounded-md font-extrabold uppercase tracking-[0.22em] text-white ring-1 ring-black/15 shadow bg-[linear-gradient(90deg,#D52EF5_0%,#5416DD_100%)] hover:brightness-110 active:translate-y-[1px] transition"
-              onClick={() => {
-                // TODO: hook up to your submit handler
-                onClose();
-              }}
+              className="mt-2 cursor-pointer inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 rounded-md font-extrabold uppercase tracking-[0.22em] text-white ring-1 ring-black/15 shadow bg-[linear-gradient(90deg,#D52EF5_0%,#5416DD_100%)] hover:brightness-110 active:translate-y-[1px] transition"
+              onClick={onClose}
             >
               {kind === "sponsor"
                 ? "Submit Sponsorship Application"
@@ -129,10 +123,10 @@ function Tab({
 
 function ConsentCheckbox() {
   return (
-    <label className="flex items-center gap-2 text-white/90 text-sm mt-2 mb-4 sm:mb-3">
+    <label className="flex items-center gap-2 text-white/90 text-sm leading-tight mt-0.5 mb-1 sm:mt-1.5 sm:mb-2">
       <input
         type="checkbox"
-        className="h-5 w-5 rounded-md bg-white/5 border border-white/30 accent-[#6E61FF] cursor-pointer"
+        className="h-4 w-4 rounded-md bg-white/5 border border-white/30 accent-[#6E61FF] cursor-pointer"
       />
       <span>I consent to be contacted regarding my application and related opportunities.</span>
     </label>

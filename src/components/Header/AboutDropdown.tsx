@@ -1,123 +1,149 @@
 // /src/components/Header/AboutDropdown.tsx
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
-type Item = { label: string; targetId: string };
+type Item = { label: string; id: string };
 
-/**
- * Order matches your request:
- * Special Guests, Experience, Tournaments, Venue, FAQ
- */
 const ITEMS: Item[] = [
-  { label: "Special Guests", targetId: "special-guests" },
-  { label: "Experience", targetId: "experience" },
-  { label: "Tournaments", targetId: "tournaments" },
-  { label: "Venue", targetId: "venue" },
-  { label: "FAQ", targetId: "faq" },
+  { label: "Special Guests", id: "special-guests" },
+  { label: "Experience", id: "experience" },
+  { label: "Tournaments", id: "tournaments" },
+  { label: "Ticket Tiers", id: "ticket-tiers" }, // ✅ correct id
+  { label: "Venue", id: "venue" },
+  { label: "FAQ", id: "faq" },
 ];
 
-export default function AboutDropdown() {
+const normalizeId = (id: string) => (id === "tickets" ? "ticket-tiers" : id);
+
+function getHeaderOffset(): number {
+  if (typeof window === "undefined") return 80;
+  const v = getComputedStyle(document.documentElement).getPropertyValue("--header-h");
+  const n = parseInt(v || "", 10);
+  return Number.isFinite(n) ? n : 80;
+}
+
+function smoothScrollToId(id: string) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const y = el.getBoundingClientRect().top + window.pageYOffset - getHeaderOffset();
+  window.scrollTo({ top: y, behavior: "smooth" });
+  el.focus?.({ preventScroll: true });
+}
+
+export default function AboutDropdown({
+  triggerClassName,
+}: {
+  /** Classes applied to the ABOUT trigger; pass same as your other nav links */
+  triggerClassName?: string;
+}) {
   const [open, setOpen] = useState(false);
-  const menuId = `${useId()}-about-menu`;
+  const hoverTimer = useRef<number | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const pathname = usePathname();
+  const router = useRouter();
 
-  // useRef with proper timeout type (works server & client)
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const safeOpen = () => {
+    if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
+    setOpen(true);
+  };
+  const safeClose = (delay = 140) => {
+    if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
+    hoverTimer.current = window.setTimeout(() => setOpen(false), delay) as unknown as number;
+  };
 
-  const clearTimer = useCallback(() => {
-    if (closeTimer.current) {
-      clearTimeout(closeTimer.current);
-      closeTimer.current = null;
-    }
-  }, []);
-
-  const delayedClose = useCallback(() => {
-    clearTimer();
-    closeTimer.current = setTimeout(() => setOpen(false), 140);
-  }, [clearTimer]);
+  useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
-    return () => clearTimer();
-  }, [clearTimer]);
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
-  const handleNavigate = useCallback((targetId: string) => {
-    // Smooth scroll to section (sections should have scroll-mt- classes)
-    const el = document.getElementById(targetId);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-      // Update hash without full navigation
-      history.replaceState(null, "", `#${targetId}`);
-    }
-    setOpen(false);
-  }, []);
+  useEffect(() => {
+    if (!open) return;
+    const onDocClick = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      if (!containerRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onDocClick);
+    return () => document.removeEventListener("pointerdown", onDocClick);
+  }, [open]);
 
-  // Basic keyboard support: open on ArrowDown, close on Escape
-  const onTriggerKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      setOpen(true);
-    } else if (e.key === "Escape") {
+  const onItemClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, rawId: string) => {
+      const id = normalizeId(rawId);
       setOpen(false);
-    }
-  };
+
+      if (pathname === "/") {
+        e.preventDefault();
+        history.pushState(null, "", `/#${id}`);
+        requestAnimationFrame(() => smoothScrollToId(id));
+        return;
+      }
+
+      e.preventDefault();
+      router.push(`/#${id}`);
+    },
+    [pathname, router]
+  );
+
+  const TRIGGER_FALLBACK =
+    "text-[13px] font-extrabold uppercase tracking-wide text-white/90 hover:text-white transition";
 
   return (
     <div
+      ref={containerRef}
       className="relative"
-      onMouseEnter={() => {
-        clearTimer();
-        setOpen(true);
-      }}
-      onMouseLeave={delayedClose}
+      onMouseEnter={safeOpen}
+      onMouseLeave={() => safeClose(160)}
     >
-      {/* Trigger — explicit type to avoid hydration mismatches */}
       <button
         type="button"
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-controls={menuId}
-        onKeyDown={onTriggerKeyDown}
-        className="text-sm font-extrabold uppercase tracking-wide text-white/90 hover:text-white transition inline-flex items-center gap-1"
+        onClick={() => setOpen((v) => !v)}
+        className={`inline-flex items-center gap-1 ${triggerClassName ?? TRIGGER_FALLBACK}`}
       >
-        ABOUT <span className="text-white/70">+</span>
+        <span>ABOUT</span>
+        <span aria-hidden>+</span>
       </button>
 
-      {/* Invisible “bridge” so moving cursor from trigger to panel doesn’t close it */}
+      {open && <div aria-hidden className="absolute left-0 top-full h-3 w-56" />}
+
       {open && (
         <div
-          className="absolute left-0 top-full h-2 w-48"
-          aria-hidden="true"
-        />
+          role="menu"
+          aria-label="About"
+          className="absolute left-0 top-[calc(100%+10px)] z-50 w-[320px] max-w-[85vw]
+                     rounded-2xl border border-white/10 bg-neutral-900/95 backdrop-blur shadow-2xl"
+          onMouseEnter={safeOpen}
+          onMouseLeave={() => safeClose(160)}
+        >
+          <div className="max-h-[70vh] overflow-y-auto overscroll-contain p-2">
+            <ul className="py-2">
+              {ITEMS.map((it) => {
+                const id = normalizeId(it.id);
+                return (
+                  <li key={id}>
+                    <Link
+                      href={`/#${id}`}
+                      prefetch={false}
+                      className="block rounded-xl px-4 py-3 text-base hover:bg-white/5 focus:bg-white/10"
+                      onClick={(e) => onItemClick(e, id)}
+                    >
+                      <span className="font-semibold">{it.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
       )}
-
-      {/* Panel */}
-      <div
-        id={menuId}
-        role="menu"
-        aria-label="About sections"
-        className={[
-          "absolute left-0 top-[calc(100%+8px)] w-[320px] overflow-hidden rounded-2xl",
-          "bg-[rgba(19,19,19,0.9)] backdrop-blur ring-1 ring-white/10 shadow-2xl",
-          "transition-opacity duration-150",
-          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
-        ].join(" ")}
-        onMouseEnter={clearTimer}
-        onMouseLeave={delayedClose}
-      >
-        <ul className="py-3">
-          {ITEMS.map((item) => (
-            <li key={item.targetId}>
-              <button
-                role="menuitem"
-                onClick={() => handleNavigate(item.targetId)}
-                className="w-full text-left px-5 py-4 text-lg font-semibold text-white/95 hover:bg-white/5 focus:outline-none focus-visible:bg-white/10"
-              >
-                {item.label}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 }

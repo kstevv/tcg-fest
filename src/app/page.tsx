@@ -44,30 +44,42 @@ export default function HomePage() {
       </header>
 
       {/* Main content (order matches the About dropdown) */}
-      <main className="space-y-20 md:space-y-24">
+      <main className="space-y-12 md:space-y-16">
         {/* 1) Special Guests */}
         <SpecialGuestsSection speakers={GUESTS} />
 
         {/* 2) Experience */}
-        <Programming />
+        <div className="-mt-4 md:-mt-6">
+          <Programming />
+        </div>
 
         {/* 3) Tournaments */}
-        <TournamentsSection />
+        <div className="-mt-4 md:-mt-6">
+          <TournamentsSection />
+        </div>
 
         {/* 4) Ticket tiers */}
-        <TicketTiers />
+        <div className="-mt-4 md:-mt-6">
+          <TicketTiers />
+        </div>
 
         {/* 5) Get involved */}
-        <GetInvolved />
+        <div className="-mt-4 md:-mt-6">
+          <GetInvolved />
+        </div>
 
-        {/* 6) Venue (moved here — below Get Involved) */}
-        <Venue
-          title="Travis County Exposition Center"
-          address="7311 Decker Ln, Austin, TX 78724"
-        />
+        {/* 6) Venue (keep normal spacing) */}
+        <div className="-mt-4 md:-mt-6">
+          <Venue
+            title="Travis County Exposition Center"
+            address="7311 Decker Ln, Austin, TX 78724"
+          />
+        </div>
 
         {/* 7) FAQ */}
-        <FAQSection items={TCGFEST_FAQ} />
+        <div className="-mt-4 md:-mt-6">
+          <FAQSection items={TCGFEST_FAQ} />
+        </div>
       </main>
     </>
   );

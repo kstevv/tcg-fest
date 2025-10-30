@@ -3,7 +3,6 @@
 type Props = {
   title?: string;
   address?: string;
-  // If you ever need to swap the map location, pass a different embed URL
   mapSrc?: string;
   className?: string;
 };
@@ -16,26 +15,24 @@ export default function Venue({
 }: Props) {
   return (
     <section
-      id="venue"
-      className={`relative w-full overflow-hidden py-16 sm:py-24 ${className}`}
       aria-labelledby="venue-heading"
+      className={`relative w-full overflow-hidden py-16 sm:py-24 ${className}`}
     >
-      {/* Decorative dotted gradient background on the right side */}
-      {/* Mesh gradient */}
-{/* Dots on transparent */}
-<div aria-hidden="true" className="absolute inset-0 -z-10">
-  <div
-    className="
-      h-full w-full
-      [background-image:radial-gradient(#D52EF566_1.2px,transparent_1.6px)]
-      [background-size:14px_14px]
-    "
-  />
-</div>
+      {/* ✅ mobile offset smaller, desktop untouched */}
+      <span
+        id="venue"
+        className="block -mt-24 pt-24 md:-mt-36 md:pt-36 lg:-mt-40 lg:pt-40"
+        aria-hidden="true"
+      />
+
+      {/* Background dots */}
+      <div aria-hidden="true" className="absolute inset-0 -z-10">
+        <div className="h-full w-full [background-image:radial-gradient(#D52EF566_1.2px,transparent_1.6px)] [background-size:14px_14px]" />
+      </div>
 
       <div className="page-container">
         <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2">
-          {/* Left: copy */}
+          {/* Left content */}
           <div>
             <p className="mb-3 text-sm font-semibold tracking-wider text-[#D52EF5]">
               THE VENUE
@@ -51,7 +48,7 @@ export default function Venue({
             <p className="mt-4 text-base text-white/80">{address}</p>
           </div>
 
-          {/* Right: embedded map */}
+          {/* Map */}
           <div className="relative">
             <div className="relative h-80 w-full overflow-hidden rounded-2xl ring-1 ring-white/10 shadow-[0_25px_60px_-20px_rgba(0,0,0,0.6)] md:h-[440px]">
               <iframe

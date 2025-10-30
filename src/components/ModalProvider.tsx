@@ -20,6 +20,8 @@ type Ctx = {
   open: (tab?: ModalTab) => void;
   close: () => void;
   setTab: (t: ModalTab) => void;
+  // Toast trigger available to children
+  showToast: (title: string, message?: string) => void;
 };
 
 const ApplicationModalContext = createContext<Ctx | null>(null);
@@ -37,7 +39,62 @@ export function useApplicationModal() {
 /** Extract the discriminated subtypes so TS knows exact fields in each form */
 type SponsorApp = Extract<Application, { type: "sponsor" }>;
 type VendorApp = Extract<Application, { type: "vendor" }>;
-type PressApp   = Extract<Application, { type: "press" }>;
+type PressApp  = Extract<Application, { type: "press" }>;
+
+/* ---------------- Toast ---------------- */
+function SuccessToast({
+  title,
+  message,
+  onClose,
+}: {
+  title: string;
+  message?: string;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const t = setTimeout(onClose, 3200);
+    return () => clearTimeout(t);
+  }, [onClose]);
+
+  return (
+    <div role="status" aria-live="polite" className="pointer-events-auto">
+      <div
+        className="relative mx-auto w-[92vw] max-w-md rounded-2xl px-4 py-3.5 shadow-2xl ring-1 ring-white/15
+                   backdrop-blur-lg text-white transition
+                   bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))]
+                   before:absolute before:inset-0 before:-z-10 before:rounded-2xl
+                   before:bg-[radial-gradient(120%_120%_at_0%_0%,#D52EF566,transparent_60%),radial-gradient(120%_120%_at_100%_0%,#5416DD55,transparent_60%)]
+                   animate-toastIn"
+      >
+        <div className="flex items-start gap-3">
+          <div className="grid place-items-center h-9 w-9 rounded-xl ring-1 ring-white/20
+                          bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(255,255,255,0.06))]">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
+              <path d="M20 7 9 18l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+
+          <div className="flex-1">
+            <div className="text-sm font-extrabold tracking-wide uppercase opacity-95">{title}</div>
+            {message ? <div className="mt-0.5 text-sm text-white/85 leading-relaxed">{message}</div> : null}
+          </div>
+
+          <button
+            aria-label="Close notification"
+            onClick={onClose}
+            className="shrink-0 rounded-md p-1.5 text-white/70 hover:text-white hover:bg-white/10 ring-1 ring-white/10 transition"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Provider ---------------- */
 
 export default function ApplicationModalProvider({
   children,
@@ -47,6 +104,13 @@ export default function ApplicationModalProvider({
   const [isOpen, setIsOpen] = useState(false);
   const [tab, setTab] = useState<ModalTab>("sponsor");
 
+  // Toast state
+  const [toast, setToast] = useState<{ title: string; message?: string } | null>(null);
+  const showToast = useCallback((title: string, message?: string) => {
+    setToast({ title, message });
+  }, []);
+  const hideToast = useCallback(() => setToast(null), []);
+
   const open = useCallback((t?: ModalTab) => {
     if (t) setTab(t);
     setIsOpen(true);
@@ -54,7 +118,7 @@ export default function ApplicationModalProvider({
 
   const close = useCallback(() => setIsOpen(false), []);
 
-  // prevent background scroll
+  // prevent background scroll when modal open
   useEffect(() => {
     if (!isOpen) return;
     const html = document.documentElement;
@@ -70,13 +134,28 @@ export default function ApplicationModalProvider({
   }, [isOpen]);
 
   const value = useMemo<Ctx>(
-    () => ({ isOpen, tab, open, close, setTab }),
-    [isOpen, tab, open, close],
+    () => ({ isOpen, tab, open, close, setTab, showToast }),
+    [isOpen, tab, open, close, showToast],
   );
 
   return (
     <ApplicationModalContext.Provider value={value}>
       {children}
+
+      {/* Global toast portal */}
+      <div
+        className="pointer-events-none fixed inset-x-0 top-4 z-[110] grid place-items-center"
+        aria-live="polite"
+      >
+        {toast && (
+          <SuccessToast
+            title={toast.title}
+            message={toast.message}
+            onClose={hideToast}
+          />
+        )}
+      </div>
+
       {isOpen && <Modal tab={tab} close={close} setTab={setTab} />}
     </ApplicationModalContext.Provider>
   );
@@ -123,9 +202,9 @@ function Modal({
             </button>
           </div>
 
-          {/* Tabs */}
+          {/* Tabs (mobile adds spacing below) */}
           <div className="px-5 md:px-6 pb-3 md:pb-4">
-            <div className="flex gap-3">
+            <div className="flex gap-3 mb-3 md:mb-0">
               <TabButton active={tab === "sponsor"} onClick={() => setTab("sponsor")}>Sponsor</TabButton>
               <TabButton active={tab === "vendor"} onClick={() => setTab("vendor")}>Vend</TabButton>
               <TabButton active={tab === "press"} onClick={() => setTab("press")}>Press</TabButton>
@@ -170,8 +249,18 @@ function TabButton({
   );
 }
 
-function Row({ children }: { children: React.ReactNode }) {
-  return <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">{children}</div>;
+function Row({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 ${className}`}>
+      {children}
+    </div>
+  );
 }
 
 const inputBase =
@@ -179,12 +268,17 @@ const inputBase =
 const textareaBase =
   "w-full rounded-md bg-[#151823] text-white placeholder-white/40 ring-1 ring-white/10 min-h-[120px] p-3.5 md:p-4 focus:outline-none focus:ring-2 focus:ring-[#6E61FF]";
 const labelBase = "text-xs font-bold uppercase tracking-wide text-white/70 mb-1.5";
+
+/* Mobile gets extra vertical padding; desktop retains fixed height */
 const submitBtn =
-  "w-full mt-4 md:mt-6 h-12 md:h-14 rounded-md font-extrabold uppercase tracking-[0.25em] bg-gradient-to-r from-[#D52EF5] to-[#5416DD] ring-1 ring-black/15 shadow cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed";
+  "w-full mt-4 md:mt-6 h-auto md:h-14 rounded-md font-extrabold uppercase tracking-[0.25em] leading-tight " +
+  "bg-gradient-to-r from-[#D52EF5] to-[#5416DD] ring-1 ring-black/15 shadow cursor-pointer " +
+  "px-4 py-3 md:py-0 disabled:opacity-70 disabled:cursor-not-allowed";
 
 /* --------------- Forms --------------- */
 
 function SponsorForm({ onDone }: { onDone: () => void }) {
+  const { showToast } = useApplicationModal();
   const [submitting, setSubmitting] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -192,7 +286,7 @@ function SponsorForm({ onDone }: { onDone: () => void }) {
     if (submitting) return;
     setSubmitting(true);
 
-    const form = e.currentTarget; // capture before await
+    const form = e.currentTarget;
 
     try {
       const fd = new FormData(form);
@@ -206,30 +300,31 @@ function SponsorForm({ onDone }: { onDone: () => void }) {
         city: String(fd.get("city") || "").trim() || undefined,
         website: undefined,
         goals: String(fd.get("participation") || "").trim() || undefined,
-        // Budget is a controlled <select> with exact enum values:
         budgetRange: (String(fd.get("budgetRange") || "") ||
           undefined) as SponsorApp["budgetRange"],
         notes: undefined,
       };
 
       await submitApplication(app);
-      alert("✅ Sponsorship application submitted!");
-      form.reset(); // safe now
-      onDone();     // close/unmount after reset
+      form.reset();
+      onDone();
+      showToast("Application submitted", "Thanks! We’ll be in touch shortly.");
     } catch (err) {
-        const message =
-          err instanceof Error ? err.message : String(err ?? "Unknown error");
-        alert(`Submission failed: ${message}`);
-      } finally {
-        setSubmitting(false);
-      }
+      const message =
+        err instanceof Error ? err.message : String(err ?? "Unknown error");
+      // Optional: you can add an error toast variant later
+      alert(`Submission failed: ${message}`);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-4 md:space-y-5">
-      <Row>
+      {/* mobile-only margin above first row */}
+      <Row className="mt-3 md:mt-0">
         <div>
-          <div className={labelBase}>Name *</div>
+          <div className={labelBase}>Your Name *</div>
           <input name="name" required className={inputBase} placeholder="Jane Doe" />
         </div>
         <div>
@@ -243,7 +338,7 @@ function SponsorForm({ onDone }: { onDone: () => void }) {
           <input name="brand" required className={inputBase} placeholder="Company / Brand" />
         </div>
         <div>
-          <div className={labelBase}>Phone</div>
+          <div className={labelBase}>Phone Number</div>
           <input name="phone" className={inputBase} placeholder="(555) 123-4567" />
         </div>
       </Row>
@@ -258,7 +353,12 @@ function SponsorForm({ onDone }: { onDone: () => void }) {
             name="budgetRange"
             required
             defaultValue=""
-            onChange={(e) => e.currentTarget.classList.toggle("text-white/40", e.currentTarget.value === "")}
+            onChange={(e) =>
+              e.currentTarget.classList.toggle(
+                "text-white/40",
+                e.currentTarget.value === "",
+              )
+            }
             className={inputBase.replace("h-11", "h-11 pr-10") + " text-white/40"}
             aria-label="Budget Range"
           >
@@ -294,7 +394,7 @@ function SponsorForm({ onDone }: { onDone: () => void }) {
           </span>
         </label>
       </div>
-      <button type="submit" className={submitBtn} disabled={submitting}>
+      <button type="submit" className={`${submitBtn} mb-8 md:mb-0`} disabled={submitting}>
         {submitting ? "Submitting…" : "SUBMIT SPONSORSHIP APPLICATION"}
       </button>
     </form>
@@ -302,6 +402,7 @@ function SponsorForm({ onDone }: { onDone: () => void }) {
 }
 
 function VendorForm({ onDone }: { onDone: () => void }) {
+  const { showToast } = useApplicationModal();
   const [submitting, setSubmitting] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -326,21 +427,22 @@ function VendorForm({ onDone }: { onDone: () => void }) {
       };
 
       await submitApplication(app);
-      alert("✅ Vendor application submitted!");
       form.reset();
       onDone();
+      showToast("Application submitted", "Thanks! We’ll be in touch shortly.");
     } catch (err) {
-        const message =
-          err instanceof Error ? err.message : String(err ?? "Unknown error");
-        alert(`Submission failed: ${message}`);
-      } finally {
-        setSubmitting(false);
-      }
+      const message =
+        err instanceof Error ? err.message : String(err ?? "Unknown error");
+      alert(`Submission failed: ${message}`);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-4 md:space-y-5">
-      <Row>
+      {/* mobile-only margin above first row */}
+      <Row className="mt-3 md:mt-0">
         <div>
           <div className={labelBase}>Your Name *</div>
           <input name="name" required className={inputBase} placeholder="Jane Doe" />
@@ -392,7 +494,7 @@ function VendorForm({ onDone }: { onDone: () => void }) {
           </span>
         </label>
       </div>
-      <button type="submit" className={submitBtn} disabled={submitting}>
+      <button type="submit" className={`${submitBtn} mb-8 md:mb-0`} disabled={submitting}>
         {submitting ? "Submitting…" : "SUBMIT VENDOR APPLICATION"}
       </button>
     </form>
@@ -400,6 +502,7 @@ function VendorForm({ onDone }: { onDone: () => void }) {
 }
 
 function PressForm({ onDone }: { onDone: () => void }) {
+  const { showToast } = useApplicationModal();
   const [submitting, setSubmitting] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -428,21 +531,22 @@ function PressForm({ onDone }: { onDone: () => void }) {
       };
 
       await submitApplication(app);
-      alert("✅ Press application submitted!");
       form.reset();
       onDone();
+      showToast("Application submitted", "Thanks! We’ll be in touch shortly.");
     } catch (err) {
-        const message =
-          err instanceof Error ? err.message : String(err ?? "Unknown error");
-        alert(`Submission failed: ${message}`);
-      } finally {
-        setSubmitting(false);
-      }
+      const message =
+        err instanceof Error ? err.message : String(err ?? "Unknown error");
+      alert(`Submission failed: ${message}`);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-4 md:space-y-5">
-      <Row>
+      {/* mobile-only margin above first row */}
+      <Row className="mt-3 md:mt-0">
         <div>
           <div className={labelBase}>Your Name *</div>
           <input name="name" required className={inputBase} placeholder="Jane Doe" />
@@ -504,7 +608,7 @@ function PressForm({ onDone }: { onDone: () => void }) {
           </span>
         </label>
       </div>
-      <button type="submit" className={submitBtn} disabled={submitting}>
+      <button type="submit" className={`${submitBtn} mb-8 md:mb-0`} disabled={submitting}>
         {submitting ? "Submitting…" : "SUBMIT PRESS APPLICATION"}
       </button>
     </form>

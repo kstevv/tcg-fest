@@ -42,3 +42,12 @@ body {
     @apply h-px bg-[#5416DD]/80;
   }
 }
+
+@keyframes toastIn {
+  0% { transform: translateY(-8px) scale(0.98); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.animate-toastIn {
+  animation: toastIn 260ms ease-out both;
+}
