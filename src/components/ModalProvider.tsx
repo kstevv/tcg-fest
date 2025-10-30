@@ -216,11 +216,13 @@ function SponsorForm({ onDone }: { onDone: () => void }) {
       alert("✅ Sponsorship application submitted!");
       form.reset(); // safe now
       onDone();     // close/unmount after reset
-    } catch (err: any) {
-      alert(`Submission failed: ${err?.message || "Unknown error"}`);
-    } finally {
-      setSubmitting(false);
-    }
+    } catch (err) {
+        const message =
+          err instanceof Error ? err.message : String(err ?? "Unknown error");
+        alert(`Submission failed: ${message}`);
+      } finally {
+        setSubmitting(false);
+      }
   }
 
   return (
@@ -327,11 +329,13 @@ function VendorForm({ onDone }: { onDone: () => void }) {
       alert("✅ Vendor application submitted!");
       form.reset();
       onDone();
-    } catch (err: any) {
-      alert(`Submission failed: ${err?.message || "Unknown error"}`);
-    } finally {
-      setSubmitting(false);
-    }
+    } catch (err) {
+        const message =
+          err instanceof Error ? err.message : String(err ?? "Unknown error");
+        alert(`Submission failed: ${message}`);
+      } finally {
+        setSubmitting(false);
+      }
   }
 
   return (
@@ -427,11 +431,13 @@ function PressForm({ onDone }: { onDone: () => void }) {
       alert("✅ Press application submitted!");
       form.reset();
       onDone();
-    } catch (err: any) {
-      alert(`Submission failed: ${err?.message || "Unknown error"}`);
-    } finally {
-      setSubmitting(false);
-    }
+    } catch (err) {
+        const message =
+          err instanceof Error ? err.message : String(err ?? "Unknown error");
+        alert(`Submission failed: ${message}`);
+      } finally {
+        setSubmitting(false);
+      }
   }
 
   return (

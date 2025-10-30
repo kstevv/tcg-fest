@@ -1,5 +1,6 @@
 // /src/components/Tournaments.tsx
 "use client";
+import Image from "next/image";
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -242,10 +243,13 @@ function TournamentCard({
 
           {t.logo && (
             <div className="shrink-0 flex items-center">
-              <img
+              <Image
                 src={t.logo}
                 alt={`${t.title || t.badge} logo`}
+                width={160}
+                height={40}
                 className="h-10 w-auto object-contain"
+                priority={false}
               />
             </div>
           )}
