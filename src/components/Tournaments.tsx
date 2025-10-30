@@ -6,8 +6,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 export type Tournament = {
   id: string;
-  badge: string; // top-left pill
-  title?: string; // optional heading under badge
+  badge: string;
+  title?: string;
+  logo?: string;  // 🟣 add this
   format: string;
   structure: string;
   time: string;
@@ -33,7 +34,8 @@ const CTA_CLASSES =
 const ONE_PIECE_MAIN: Tournament = {
   id: "one-piece-main-sat",
   badge: "ONE PIECE — MAIN EVENT — SATURDAY",
-  title: "One Piece TCG Championship (128-Player Cap)",
+  title: "One Piece Championship (128-Player Cap)",
+  logo: "/images/logos/one-piece-logo.png",
   format: "Constructed • 128 players max",
   structure:
     "Seven (7) Swiss rounds; play until a clear winner. Tiered prizing awarded Top 32 → Top 16 → Top 8 → Top 4 → Runner-Up → Champion (higher tiers receive everything listed below them).",
@@ -56,6 +58,7 @@ const RIFTBOUND_MAIN: Tournament = {
   id: "riftbound-main-sun",
   badge: "RIFTBOUND — MAIN EVENT — SUNDAY",
   title: "Riftbound Championship (64-Player Cap)",
+  logo: "/images/logos/riftbound-logo.jpeg",
   format:
     "Constructed • 64 players max • Planned in partnership with Carde.io (TBC)",
   structure:
@@ -76,6 +79,7 @@ const WIN_A_BOX_PODS: Tournament = {
   id: "win-a-box-pods",
   badge: "SIDE EVENT — BOTH DAYS",
   title: "On-Demand 16-Player “Win a Box” Pods",
+  logo: "/images/logos/sideevent.png",
   format:
     "Single-elimination pods • 16 players • Offered both days; games may include One Piece, Gundam, Union Arena, and more (based on interest).",
   structure:
@@ -101,24 +105,9 @@ export default function TournamentsSection({
   heading?: string;
 }) {
   // Mobile carousel refs/state
-  const containerRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const [slideW, setSlideW] = useState<number | null>(null);
   const [active, setActive] = useState(0);
-
-  // Measure the page container’s content width for perfect slide sizing
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const ro = new ResizeObserver(() => {
-      // page container has padding, use clientWidth for the real inner width we want
-      setSlideW(el.clientWidth);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
 
   // Update active index on scroll (mobile track)
   useEffect(() => {
@@ -127,8 +116,10 @@ export default function TournamentsSection({
 
     const onScroll = () => {
       if (!slideRefs.current.length) return;
-      const offsets = slideRefs.current
-        .map((n) => (n ? Math.abs(n.getBoundingClientRect().left - el.getBoundingClientRect().left) : Number.MAX_SAFE_INTEGER));
+      const left = el.getBoundingClientRect().left;
+      const offsets = slideRefs.current.map((n) =>
+        n ? Math.abs(n.getBoundingClientRect().left - left) : Number.MAX_SAFE_INTEGER
+      );
       const next = offsets.indexOf(Math.min(...offsets));
       setActive(next < 0 ? 0 : next);
     };
@@ -141,7 +132,7 @@ export default function TournamentsSection({
 
   return (
     <section id="tournaments" className="relative w-full scroll-mt-28 md:scroll-mt-40">
-      <div ref={containerRef} className="page-container py-16">
+      <div className="page-container py-16">
         {/* Title */}
         <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
           {heading}
@@ -156,44 +147,32 @@ export default function TournamentsSection({
         <div className="md:hidden">
           <div
             ref={trackRef}
-            className="flex snap-x snap-mandatory overflow-x-auto scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none]"
+            className="flex flex-nowrap snap-x snap-mandatory overflow-x-auto scroll-smooth gap-3 scroll-px-4 [-ms-overflow-style:none] [scrollbar-width:none]"
           >
-            {/* Hide scrollbar (WebKit) */}
-            <style
-              dangerouslySetInnerHTML={{
-                __html:
-                  ".page-container .no-scrollbar::-webkit-scrollbar{display:none}",
-              }}
-            />
             {tournaments.map((t, i) => (
               <div
                 key={t.id}
-                ref={(el: HTMLDivElement | null) => {
-                  slideRefs.current[i] = el; // <-- return void (fixes Vercel type error)
+                ref={(el) => {
+                  slideRefs.current[i] = el;
                 }}
-                className="snap-start shrink-0 px-0"
-                style={{ width: slideW || undefined }}
+                className="flex-none basis-[calc(100%-0.75rem)] snap-center snap-always"
               >
-                {/* Equal height card look on mobile too */}
                 <div className="min-h-[560px]">
                   <TournamentCard
                     t={t}
-                    hideCta={t.id === "win-a-box-pods"} // no CTA on third card
+                    hideCta={t.id === "win-a-box-pods"}
                   />
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Dots — fixed distance below, independent of varying card heights */}
+          {/* Dots */}
           <div className="mt-6 flex justify-center gap-2">
             {Array.from({ length: dots }).map((_, i) => (
               <span
                 key={i}
-                className={[
-                  "h-2 w-2 rounded-full",
-                  i === active ? "bg-white" : "bg-white/30",
-                ].join(" ")}
+                className={["h-2 w-2 rounded-full", i === active ? "bg-white" : "bg-white/30"].join(" ")}
               />
             ))}
           </div>
@@ -203,11 +182,7 @@ export default function TournamentsSection({
         <div className="hidden md:grid md:grid-cols-2 md:gap-6">
           {tournaments.map((t) => (
             <div key={t.id} className="min-h-[560px]">
-              <TournamentCard
-                t={t}
-                // Same CTA baseline; hide on 3rd card
-                hideCta={t.id === "win-a-box-pods"}
-              />
+              <TournamentCard t={t} hideCta={t.id === "win-a-box-pods"} />
             </div>
           ))}
         </div>
@@ -227,42 +202,73 @@ function TournamentCard({
 }) {
   return (
     <div className={CARD_SHELL}>
-      {/* Badge */}
-      <div className="flex items-center gap-2">
-        <span className="inline-flex h-8 items-center rounded-full bg-neutral-800/80 px-3 text-xs font-bold uppercase tracking-wide text-white/90 ring-1 ring-white/15">
-          {t.badge}
-        </span>
+      {/* Header: mobile centered, desktop split L/R */}
+      <div className="mb-4">
+        {/* Mobile (stacked, centered) */}
+        <div className="md:hidden">
+          {t.logo && (
+            <div className="flex justify-center mb-3">
+              <img src={t.logo} alt={`${t.title || t.badge} logo`} className="h-10 w-auto object-contain" />
+            </div>
+          )}
+          <div className="flex items-center justify-center">
+            <span className="inline-flex items-center justify-center rounded-full bg-neutral-800/80
+                              px-3 py-[6px] text-xs font-bold uppercase tracking-wide text-white/90
+                              ring-1 ring-white/15 text-center leading-none">
+              {t.badge}
+            </span>
+          </div>
+          {t.title && (
+            <div className="mt-3 text-center">
+              <div className="text-white/90 text-sm font-extrabold">{t.title}</div>
+            </div>
+          )}
+        </div>
+
+        {/* Desktop (badge+title left, logo right, vertically centered) */}
+        <div className="hidden md:flex md:items-center md:justify-between md:gap-6">
+          <div className="min-w-0">
+            <span className="inline-flex items-center justify-center rounded-full bg-neutral-800/80
+                              px-3 py-[6px] text-xs font-bold uppercase tracking-wide text-white/90
+                              ring-1 ring-white/15 leading-none">
+              {t.badge}
+            </span>
+            {t.title && (
+              <div className="mt-3">
+                <div className="text-white/90 text-sm font-extrabold">{t.title}</div>
+              </div>
+            )}
+          </div>
+
+          {t.logo && (
+            <div className="shrink-0 flex items-center">
+              <img
+                src={t.logo}
+                alt={`${t.title || t.badge} logo`}
+                className="h-10 w-auto object-contain"
+              />
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Optional title */}
-      {t.title && (
-        <div className="mt-3">
-          <div className="text-white/90 text-sm">{t.title}</div>
-        </div>
-      )}
-
       {/* Details */}
-      <div className="mt-5 space-y-3 text-sm text-white/85">
+      <div className="mt-5 md:mt-3 space-y-3 text-sm text-white/85">
         <InfoRow label="Format" value={t.format} />
         <InfoRow label="Structure" value={t.structure} />
         <InfoRow label="Time" value={t.time} />
         <InfoRow label="Entry" value={t.entry} />
-
         <div className="pt-1">
-          <span className="block text-white/60 text-[11px] uppercase tracking-wide">
-            Prizes
-          </span>
+          <span className="block text-white/60 text-[11px] uppercase tracking-wide">Prizes</span>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-white/85">
-            {t.prizes.map((p, i) => (
-              <li key={i}>{p}</li>
-            ))}
+            {t.prizes.map((p, i) => (<li key={i}>{p}</li>))}
           </ul>
         </div>
       </div>
 
-      {/* CTA pinned to bottom (desktop aligns across first two cards) */}
+      {/* CTA centered */}
       {!hideCta && (
-        <div className="mt-auto pt-6">
+        <div className="mt-auto pt-6 flex justify-center">
           <Link href={t.cta.href} className={CTA_CLASSES}>
             {t.cta.label}
           </Link>
@@ -271,6 +277,7 @@ function TournamentCard({
     </div>
   );
 }
+
 
 /* Single helper name (prevents duplicate identifier errors) */
 function InfoRow({ label, value }: { label: string; value: string }) {

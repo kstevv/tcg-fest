@@ -1,4 +1,3 @@
-// /src/components/forms/ApplicationModal.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -33,12 +32,7 @@ export default function ApplicationModal({
 
   if (!open) return null;
 
-  const title =
-    kind === "sponsor"
-      ? "Sponsor"
-      : kind === "vendor"
-      ? "Vend"
-      : "Press";
+  const title = kind === "sponsor" ? "Sponsor" : kind === "vendor" ? "Vend" : "Press";
 
   return (
     <div
@@ -128,39 +122,81 @@ function Tab({
   );
 }
 
-/* Replace with your real form fields; this keeps layout & spacing consistent */
+/* Form fields per tab, with requested changes */
 function Form({ kind }: { kind: "sponsor" | "vendor" | "press" }) {
+  if (kind === "sponsor") {
+    // Swap Email and Brand positions; replace Website/Booths with Budget (USD)
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="Name *" placeholder="Jane Doe" />
+          <Field label="Email *" placeholder="name@email.com" type="email" />
+          <Field label="Brand *" placeholder="Company / Brand" />
+          <Field label="Phone *" placeholder="(555) 123-4567" />
+          <Field label="City" placeholder="Austin, TX" />
+          <Field label="Budget (USD)" placeholder="5000" type="number" />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-white/90 mb-2">
+            How you’d like to participate
+          </label>
+          <textarea
+            className="w-full rounded-md bg-white/5 text-white placeholder:text-white/40 ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-[#6E61FF] px-3 py-3 min-h-[120px]"
+            placeholder="Booth, brand placement, activations…"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (kind === "vendor") {
+    // Keep Number of Booths; textarea label changed to "What you sell"
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="Your Name" placeholder="Jane Doe" />
+          <Field label="Phone Number" placeholder="(555) 123-4567" />
+          <Field label="Email" placeholder="name@email.com" type="email" />
+          <Field label="City" placeholder="Austin, TX" />
+          <Field label="Brand *" placeholder="Company / Brand" />
+          <Field label="Number of Booths" placeholder="1" />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-white/90 mb-2">
+            What you sell
+          </label>
+          <textarea
+            className="w-full rounded-md bg-white/5 text-white placeholder:text-white/40 ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-[#6E61FF] px-3 py-3 min-h-[120px]"
+            placeholder="Sealed, singles, accessories, grading, etc."
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // press
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Name *" placeholder="Jane Doe" />
-        <Field
-          label={kind === "press" ? "Outlet *" : kind === "vendor" ? "Brand *" : "Brand *"}
-          placeholder={kind === "press" ? "News outlet / publication" : "Company / Brand"}
-        />
-        <Field label="Email *" placeholder="name@email.com" type="email" />
-        <Field label="Phone *" placeholder="(555) 123-4567" />
+        <Field label="Your Name" placeholder="Jane Doe" />
+        <Field label="Phone Number" placeholder="(555) 123-4567" />
+        <Field label="Email" placeholder="name@email.com" type="email" />
         <Field label="City" placeholder="Austin, TX" />
-        <Field label={kind === "vendor" ? "Number of Booths" : "Website"} placeholder={kind === "vendor" ? "1" : "https://"} />
+        <Field label="What kind of media?" placeholder="YouTube, Podcast, Blog…" />
+        <Field label="Primary Platform (Channel)" placeholder="YouTube / Instagram / TikTok / etc." />
+        <Field label="Primary Platform Handle" placeholder="@yourhandle" />
+        <Field label="Approx. Followers" placeholder="e.g., 120k total" />
       </div>
 
       <div>
         <label className="block text-sm font-semibold text-white/90 mb-2">
-          {kind === "sponsor"
-            ? "How you’d like to participate"
-            : kind === "vendor"
-            ? "What you’re selling"
-            : "Coverage focus / requests"}
+          Coverage focus / requests
         </label>
         <textarea
           className="w-full rounded-md bg-white/5 text-white placeholder:text-white/40 ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-[#6E61FF] px-3 py-3 min-h-[120px]"
-          placeholder={
-            kind === "sponsor"
-              ? "Booth, brand placement, activations…"
-              : kind === "vendor"
-              ? "Sealed, singles, accessories, grading, etc."
-              : "Interview requests, panels, segments…"
-          }
+          placeholder="Interview requests, panels, segments…"
         />
       </div>
     </div>
