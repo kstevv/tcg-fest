@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import type { JSX } from "react";
+import { useState, type JSX } from "react";
 
 export type FAQItem = { q: string; a: string };
 
@@ -17,17 +16,15 @@ export default function FAQSection({
   return (
     <section id="faq" className="relative w-full scroll-mt-28 md:scroll-mt-40">
       <div className="page-container py-16">
-        {/* Title */}
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white pb-2 md:pb-0">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white">
           Frequently Asked Questions
         </h2>
 
-        {/* Divider — tighter on mobile */}
-        <div className="mt-0">
-          <div className="h-px w-full mb-5 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
+        {/* Divider — slightly more breathing room on mobile */}
+        <div className="mt-4 md:mt-6">
+          <div className="h-px w-full mb-8 md:mb-10 bg-gradient-to-r from-transparent via-[#D52EF5]/80 to-transparent shadow-[0_0_12px_#D52EF580]" />
         </div>
 
-        {/* Accordion */}
         <div className="space-y-4">
           {items.map((item, i) => {
             const isOpen = open === i;
@@ -43,7 +40,6 @@ export default function FAQSection({
                     : "",
                 ].join(" ")}
               >
-                {/* Header */}
                 <button
                   type="button"
                   className="group w-full text-left px-5 sm:px-6 py-4 sm:py-5 flex items-center"
@@ -56,8 +52,6 @@ export default function FAQSection({
                       {item.q}
                     </span>
                   </span>
-
-                  {/* plus / close chip */}
                   <span
                     className={[
                       "inline-flex h-7 w-7 items-center justify-center rounded-md",
@@ -72,7 +66,6 @@ export default function FAQSection({
                   </span>
                 </button>
 
-                {/* Divider under header when open */}
                 <div
                   className={[
                     "mx-5 sm:mx-6 h-px bg-white/10 transition-opacity",
@@ -80,7 +73,6 @@ export default function FAQSection({
                   ].join(" ")}
                 />
 
-                {/* Panel */}
                 <div
                   id={`faq-panel-${i}`}
                   role="region"
@@ -104,27 +96,14 @@ export default function FAQSection({
   );
 }
 
-/* ---------- Icons ---------- */
 const PlusIcon: React.FC = (): JSX.Element => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 14 14"
-    aria-hidden="true"
-    className="fill-current"
-  >
+  <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" className="fill-current">
     <path d="M6 0h2v6h6v2H8v6H6V8H0V6h6z" />
   </svg>
 );
 
 const CloseIcon: React.FC = (): JSX.Element => (
-  <svg
-    width="12"
-    height="12"
-    viewBox="0 0 12 12"
-    aria-hidden="true"
-    className="fill-current"
-  >
+  <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" className="fill-current">
     <path d="M10.95 1.05 1.05 10.95 0 9.9 9.9 0l1.05 1.05ZM9.9 10.95 0 1.05 1.05 0l9.9 9.9-1.05 1.05Z" />
   </svg>
 );
