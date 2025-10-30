@@ -32,14 +32,13 @@ export default function ApplicationModal({
 
   if (!open) return null;
 
-  const title = kind === "sponsor" ? "Sponsor" : kind === "vendor" ? "Vend" : "Press";
+  const _title = kind === "sponsor" ? "Sponsor" : kind === "vendor" ? "Vend" : "Press";
 
   return (
     <div
       ref={overlayRef}
       className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm"
       onClick={(e) => {
-        // close only if the backdrop (not the panel) is clicked
         if (e.target === overlayRef.current) onClose();
       }}
       aria-modal="true"
@@ -69,16 +68,20 @@ export default function ApplicationModal({
             </button>
           </div>
 
-          {/* Scrollable content (mobile-safe) */}
+          {/* Scrollable content */}
           <div className="max-h-[75vh] overflow-y-auto ios-scroll px-4 sm:px-6 py-4">
             <Form kind={kind} />
           </div>
 
-          {/* Footer with submit */}
-          <div className="px-4 sm:px-6 py-4 border-t border-white/10">
+          {/* Footer */}
+          <div className="px-4 sm:px-6 pt-3 pb-20 sm:pb-6 border-t border-white/10">
+            {/* Consent line */}
+            <ConsentCheckbox />
+
+            {/* Submit button */}
             <button
               type="button"
-              className="cursor-pointer inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 rounded-md font-extrabold uppercase tracking-[0.22em] text-white ring-1 ring-black/15 shadow bg-[linear-gradient(90deg,#D52EF5_0%,#5416DD_100%)] hover:brightness-110 active:translate-y-[1px] transition"
+              className="mt-4 cursor-pointer inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 rounded-md font-extrabold uppercase tracking-[0.22em] text-white ring-1 ring-black/15 shadow bg-[linear-gradient(90deg,#D52EF5_0%,#5416DD_100%)] hover:brightness-110 active:translate-y-[1px] transition"
               onClick={() => {
                 // TODO: hook up to your submit handler
                 onClose();
@@ -96,6 +99,8 @@ export default function ApplicationModal({
     </div>
   );
 }
+
+/* ----- Small Components ----- */
 
 function Tab({
   label,
@@ -122,10 +127,21 @@ function Tab({
   );
 }
 
-/* Form fields per tab, with requested changes */
+function ConsentCheckbox() {
+  return (
+    <label className="flex items-center gap-2 text-white/90 text-sm mt-2 mb-4 sm:mb-3">
+      <input
+        type="checkbox"
+        className="h-5 w-5 rounded-md bg-white/5 border border-white/30 accent-[#6E61FF] cursor-pointer"
+      />
+      <span>I consent to be contacted regarding my application and related opportunities.</span>
+    </label>
+  );
+}
+
+/* ----- Form Fields ----- */
 function Form({ kind }: { kind: "sponsor" | "vendor" | "press" }) {
   if (kind === "sponsor") {
-    // Swap Email and Brand positions; replace Website/Booths with Budget (USD)
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -151,7 +167,6 @@ function Form({ kind }: { kind: "sponsor" | "vendor" | "press" }) {
   }
 
   if (kind === "vendor") {
-    // Keep Number of Booths; textarea label changed to "What you sell"
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -176,7 +191,6 @@ function Form({ kind }: { kind: "sponsor" | "vendor" | "press" }) {
     );
   }
 
-  // press
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -19,12 +19,13 @@ type Props = {
 export default function SpecialGuestsSection({
   speakers = [],
   title = "Special Guests",
-  blurb = "Meet creators, artists, and pros.",
   id = "special-guests",
   className = "",
 }: Props) {
+  const _blurb = "Meet creators, artists, and pros.";
+
   const showPlaceholders = speakers.length === 0;
-  const placeholderCount = 8; // how many blank tiles to show when empty
+  const placeholderCount = 8;
 
   return (
     <section

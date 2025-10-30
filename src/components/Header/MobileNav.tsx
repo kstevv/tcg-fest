@@ -9,7 +9,7 @@ type Props = {
   topOffset?: number; // px
 };
 
-export default function MobileNav({ topOffset = 72 }: Props) {
+export default function MobileNav({ topOffset: _topOffset = 72 }: Props) {
   const [open, setOpen] = useState(false);
   const { open: openApplication } = useApplicationModal();
 
@@ -23,7 +23,29 @@ export default function MobileNav({ topOffset = 72 }: Props) {
     };
   }, [open]);
 
-  // Close after clicking a link
+  // Smooth-scroll handler for in-page anchors
+  const handleAnchor = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    id: string
+  ) => {
+    // Only intercept when we're already on the homepage;
+    // otherwise let Next.js navigate to "/#id".
+    if (typeof window !== "undefined" && window.location.pathname === "/") {
+      e.preventDefault();
+      const el = document.getElementById(id);
+      if (el) {
+        const y =
+          el.getBoundingClientRect().top + window.scrollY - _topOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+      setOpen(false);
+    } else {
+      // allow normal navigation, but still close the panel immediately
+      setOpen(false);
+    }
+  };
+
+  // Close after clicking a non-anchor link
   const goto = () => setOpen(false);
 
   return (
@@ -62,7 +84,7 @@ export default function MobileNav({ topOffset = 72 }: Props) {
         {/* The rounded “card” that matches your header look */}
         <div
           className="mx-4 mt-4 rounded-2xl ring-1 ring-white/10 shadow-xl
-                     bg-[radial-gradient(120%_200%_at_50%_0%,rgba(255,255,255,0.04),rgba(0,0,0,0.0))] 
+                     bg-[radial-gradient(120%_200%_at_50%_0%,rgba(255,255,255,0.04),rgba(0,0,0,0.0))]
                      backdrop-blur text-white"
         >
           {/* Header row */}
@@ -90,33 +112,63 @@ export default function MobileNav({ topOffset = 72 }: Props) {
 
               {/* About section items (collapsed into simple list on mobile) */}
               <SectionLabel>About</SectionLabel>
+
               <Li>
-                <Link href="/#special-guests" className="block w-full py-3 px-3 rounded-md hover:bg-white/10" onClick={goto}>
+                <Link
+                  href="/#special-guests"
+                  className="block w-full py-3 px-3 rounded-md hover:bg-white/10"
+                  onClick={(e) => handleAnchor(e, "special-guests")}
+                >
                   Special Guests
                 </Link>
               </Li>
+
               <Li>
-                <Link href="/#experience" className="block w-full py-3 px-3 rounded-md hover:bg-white/10" onClick={goto}>
+                <Link
+                  href="/#experience"
+                  className="block w-full py-3 px-3 rounded-md hover:bg-white/10"
+                  onClick={(e) => handleAnchor(e, "experience")}
+                >
                   Experience
                 </Link>
               </Li>
+
               <Li>
-                <Link href="/#tournaments" className="block w-full py-3 px-3 rounded-md hover:bg-white/10" onClick={goto}>
+                <Link
+                  href="/#tournaments"
+                  className="block w-full py-3 px-3 rounded-md hover:bg-white/10"
+                  onClick={(e) => handleAnchor(e, "tournaments")}
+                >
                   Tournaments
                 </Link>
               </Li>
+
               <Li>
-                <Link href="/#ticket-tiers" className="block w-full py-3 px-3 rounded-md hover:bg-white/10" onClick={goto}>
+                <Link
+                  href="/#ticket-tiers"
+                  className="block w-full py-3 px-3 rounded-md hover:bg-white/10"
+                  onClick={(e) => handleAnchor(e, "ticket-tiers")}
+                >
                   Ticket Tiers
                 </Link>
               </Li>
+
               <Li>
-                <Link href="/#venue" className="block w-full py-3 px-3 rounded-md hover:bg-white/10" onClick={goto}>
+                <Link
+                  href="/#venue"
+                  className="block w-full py-3 px-3 rounded-md hover:bg-white/10"
+                  onClick={(e) => handleAnchor(e, "venue")}
+                >
                   Venue
                 </Link>
               </Li>
+
               <Li>
-                <Link href="/#faq" className="block w-full py-3 px-3 rounded-md hover:bg-white/10" onClick={goto}>
+                <Link
+                  href="/#faq"
+                  className="block w-full py-3 px-3 rounded-md hover:bg-white/10"
+                  onClick={(e) => handleAnchor(e, "faq")}
+                >
                   FAQ
                 </Link>
               </Li>
@@ -137,7 +189,7 @@ export default function MobileNav({ topOffset = 72 }: Props) {
 
                 <Link
                   href="/#tickets"
-                  onClick={goto}
+                  onClick={(e) => handleAnchor(e, "tickets")}
                   className="inline-flex items-center justify-center rounded-md h-11 text-[12px] font-extrabold uppercase tracking-[0.22em] text-white ring-1 ring-black/15 shadow
                              hover:brightness-110 active:translate-y-[1px] bg-[#5416DD]"
                 >
